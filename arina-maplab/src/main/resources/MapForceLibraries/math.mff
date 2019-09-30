@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="math" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="math functions">
+		<component name="sum" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 + value2 + valueN</short>
+				<long>Result is the numeric value of adding value1 and value2 and etc.</long>
+			</description>
+		</component>
+		<component name="add" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 + value2 + valueN</short>
+				<long>Result is the numeric value of adding value1 and value2 and etc.</long>
+			</description>
+		</component>
+		<component name="subtract">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 - value2</short>
+				<long>Result is the numeric value of subtracting value2 from value1.</long>
+			</description>
+		</component>
+		<component name="modulus">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 mod value2</short>
+				<long>Result is the numeric value of modulus value1 with value2.</long>
+			</description>
+		</component>
+		<component name="multiply" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 * value2 * valueN</short>
+				<long>Result is the numeric value of multiplying value1 with value2 with etc.</long>
+			</description>
+		</component>
+		<component name="divide">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = value1 / value2</short>
+				<long>Result is the numeric value of dividing value1 with value2.</long>
+			</description>
+		</component>
+		<component name="max" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = max(values)</short>
+				<long>Returns the maximum value of all values.</long>
+			</description>
+		</component>
+		<component name="min" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = min(values)</short>
+				<long>Returns the minimum value of all values.</long>
+			</description>
+		</component>
+		<component name="avg" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:decimal"/>
+				<datapoint name="value2" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = avg(values)</short>
+				<long>Returns the average value of all values.</long>
+			</description>
+		</component>
+		<component name="abs">
+			<sources>
+				<datapoint name="value" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = abs(value)</short>
+				<long>Returns a whose value is the absolute value of this one.</long>
+			</description>
+		</component>
+		<component name="round">
+			<sources>
+				<datapoint name="value" type="xs:decimal"/>
+				<datapoint name="precision" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = round(value, precision)</short>
+				<long>Returns a result rounded according to the precision settings. The precision setting may be in two formats (1. precision as number; 2. precision as string in format "precision=precisionNumber roundingMode=UP|DOWN|CEILING|FLOOR|HALF_UP|HALF_DOWN|HALF_EVEN"</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

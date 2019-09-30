@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="values" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="wellknown values">
+		<component name="null-value">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = null-value</short>
+				<long>Returns the NULL value.</long>
+			</description>
+		</component>
+		<component name="generate-guid">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = generate-guid</short>
+				<long>Returns the generated GUID value.</long>
+			</description>
+		</component>
+		<component name="current-datetime">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:dateTime"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = current-datetime</short>
+				<long>Returns the current datetime value.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

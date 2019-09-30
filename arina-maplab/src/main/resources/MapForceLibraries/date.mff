@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="date" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="conversion functions">
+		<component name="format">
+			<sources>
+				<datapoint name="value" type="xs:dateTime"/>
+				<datapoint name="format" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = format(value, format)</short>
+				<long>Function is used to convert a dateTime into a string.</long>
+			</description>
+		</component>
+		<component name="parse">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="format" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:dateTime"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = parse( value, format )</short>
+				<long>Function is used to convert a string into a datetime, according to the format.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

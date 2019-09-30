@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="io" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="file functions">
+		<component name="read">
+			<sources>
+				<datapoint name="path" type="xs:string"/>
+				<datapoint name="encoding" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = read(path, encoding)</short>
+				<long>Reads the content of the file or resource into a String. "file:" or "classpath:" prefixes should be used.</long>
+			</description>
+		</component>
+		<component name="write">
+			<sources>
+				<datapoint name="path" type="xs:string"/>
+				<datapoint name="data" type="mf:item"/>
+				<datapoint name="encoding" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = write(path, data, encoding)</short>
+				<long>Writes the String to the file.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

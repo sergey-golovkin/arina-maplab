@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="conversion" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="conversion functions">
+		<component name="convert-to-base64Binary" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:base64Binary"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-base64Binary(value)</short>
+				<long>Converts the value of arg to a base64Binary value.</long>
+			</description>
+		</component>
+		<component name="convert-to-boolean" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-boolean(value)</short>
+				<long>Converts the value of arg to a boolean value.</long>
+			</description>
+		</component>
+		<component name="convert-to-byte" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:byte"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-byte(value)</short>
+				<long>Converts the value of arg to a byte value.</long>
+			</description>
+		</component>
+		<component name="convert-to-date" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:date"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-date(value)</short>
+				<long>Converts the value of arg to a date value.</long>
+			</description>
+		</component>
+		<component name="convert-to-dateTime" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:dateTime"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-dateTime(value)</short>
+				<long>Converts the value of arg to a dateTime value.</long>
+			</description>
+		</component>
+		<component name="convert-to-decimal" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-decimal(value)</short>
+				<long>Converts the value of arg to a decimal value.</long>
+			</description>
+		</component>
+		<component name="convert-to-double" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:double"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-double(value)</short>
+				<long>Converts the value of arg to a double value.</long>
+			</description>
+		</component>
+		<component name="convert-to-duration" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:duration"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-duration(value)</short>
+				<long>Converts the value of arg to a duration value.</long>
+			</description>
+		</component>
+		<component name="convert-to-float" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:float"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-float(value)</short>
+				<long>Converts the value of arg to a float value.</long>
+			</description>
+		</component>
+		<component name="convert-to-int" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:int"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-int(value)</short>
+				<long>Converts the value of arg to an int value.</long>
+			</description>
+		</component>
+		<component name="convert-to-integer" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:integer"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-integer(value)</short>
+				<long>Converts the value of arg to an integer value.</long>
+			</description>
+		</component>
+		<component name="convert-to-long" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:long"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-long(value)</short>
+				<long>Converts the value of arg to a long value.</long>
+			</description>
+		</component>
+		<component name="convert-to-NOTATION" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:NOTATION"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-NOTATION(value)</short>
+				<long>Converts the value of arg to a NOTATION value.</long>
+			</description>
+		</component>
+		<component name="convert-to-QName" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:QName"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-QName(value)</short>
+				<long>Converts the value of arg to a QName value.</long>
+			</description>
+		</component>
+		<component name="convert-to-short" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:short"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-short(value)</short>
+				<long>Converts the value of arg to a short value.</long>
+			</description>
+		</component>
+		<component name="convert-to-string" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-string(value)</short>
+				<long>Converts the value of arg to a string value.</long>
+			</description>
+		</component>
+		<component name="convert-to-time" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:time"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-time(value)</short>
+				<long>Converts the value of arg to a time value.</long>
+			</description>
+		</component>
+		<component name="convert-to-unsignedByte" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:unsignedByte"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-unsignedByte(value)</short>
+				<long>Converts the value of arg to an unsignedByte value.</long>
+			</description>
+		</component>
+		<component name="convert-to-unsignedInt" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:unsignedInt"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-unsignedInt(value)</short>
+				<long>Converts the value of arg to an unsignedInt value.</long>
+			</description>
+		</component>
+		<component name="convert-to-unsignedShort" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:unsignedShort"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = convert-to-unsignedShort(value)</short>
+				<long>Converts the value of arg to an unsignedShort value.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

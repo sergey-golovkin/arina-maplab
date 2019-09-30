@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="number" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="conversion functions">
+		<component name="format">
+			<sources>
+				<datapoint name="value" type="xs:decimal"/>
+				<datapoint name="format" type="xs:string"/>
+				<datapoint name="decimal-point-character" connectiontype="0" type="xs:string" default="."/>
+				<datapoint name="grouping-separator" connectiontype="0" type="xs:string" default=""/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = format(value, format[, decimal-point-character][, grouping-separator])</short>
+				<long>Function is used to convert a number into a string.</long>
+			</description>
+		</component>
+		<component name="parse">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="format" type="xs:string"/>
+				<datapoint name="decimal-point-character" connectiontype="0" type="xs:string" default="."/>
+				<datapoint name="grouping-separator" connectiontype="0" type="xs:string" default=""/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = format(value, format[, decimal-point-character][, grouping-separator])</short>
+				<long>Function is used to convert a string into a number.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

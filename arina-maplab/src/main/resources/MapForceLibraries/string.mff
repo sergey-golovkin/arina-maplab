@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="string" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="string functions">
+		<component name="concat" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:string"/>
+				<datapoint name="value2" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = concat(value1, value2, ... )</short>
+				<long>Returns the concatenation of value1 and value2, etc.</long>
+			</description>
+		</component>
+		<component name="upper">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = upper(value)</short>
+				<long>Result is the value in upper case.</long>
+			</description>
+		</component>
+		<component name="lower">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = lower(value)</short>
+				<long>Result is the value in lower case.</long>
+			</description>
+		</component>
+		<component name="substring">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="beginIndex" type="xs:decimal"/>
+				<datapoint name="endIndex" type="xs:decimal" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = substring(value, beginIndex [,endIndex])</short>
+				<long>Returns a string that is a substring of this string. The substring begins at the specified beginIndex and extends to the character at index endIndex - 1. Thus the length of the substring is endIndex - beginIndex.</long>
+			</description>
+		</component>
+		<component name="starts">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="prefix" type="xs:string"/>
+				<datapoint name="ignoreCase" type="xs:boolean" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = starts(value, prefix [, ignoreCase])</short>
+				<long>Tests if this string starts with the specified prefix.</long>
+			</description>
+		</component>
+		<component name="ends">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="prefix" type="xs:string"/>
+				<datapoint name="ignoreCase" type="xs:boolean" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = ends(value, prefix [, ignoreCase])</short>
+				<long>Tests if this string ends with the specified suffix.</long>
+			</description>
+		</component>
+		<component name="contains">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="s" type="xs:string"/>
+				<datapoint name="ignoreCase" type="xs:boolean" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = contains(value, s [, ignoreCase])</short>
+				<long>Returns true if and only if this string contains the specified sequence of char values.</long>
+			</description>
+		</component>
+		<component name="length">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:decimal"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = length(value)</short>
+				<long>Returns the length of this string.</long>
+			</description>
+		</component>
+		<component name="replace">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="regex" type="xs:string"/>
+				<datapoint name="replacement" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = replace(value, regex, replacement)</short>
+				<long>Replaces each substring of this string that matches the given regular expression with the given replacement.</long>
+			</description>
+		</component>
+		<component name="split">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="regex" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="ZeroOrMore mf:no-sequence"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = split(value, regex)</short>
+				<long>Splits this string around matches of the given regular expression.</long>
+			</description>
+		</component>
+		<component name="matches">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="regex" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = matches(value, regex)</short>
+				<long>Tells whether or not this string matches the given regular expression.</long>
+			</description>
+		</component>
+		<component name="format" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="format" type="xs:string"/>
+				<datapoint name="value1" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = format(format, value1, value2, ... )</short>
+				<long>Returns a formatted string using the specified format string and arguments.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

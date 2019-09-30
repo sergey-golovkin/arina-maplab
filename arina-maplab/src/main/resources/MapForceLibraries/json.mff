@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="json" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="conversion functions">
+		<component name="unmarshal">
+			<sources>
+				<datapoint name="jsonString" type="xs:string"/>
+				<datapoint name="dateFormat" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>object = unmarshal(jsonString, dateFormat)</short>
+				<long>Returns unmarshalled object from JSON string.</long>
+			</description>
+		</component>
+		<component name="marshal">
+			<sources>
+				<datapoint name="object" type="mf:item"/>
+				<datapoint name="dateFormat" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>xmlString = marshal(object, dateFormat)</short>
+				<long>Returns JSON string from object.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>

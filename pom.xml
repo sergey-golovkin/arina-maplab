@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>arina</groupId>
+	<artifactId>arina</artifactId>
+	<packaging>pom</packaging>
+	<version>7.0.19</version>
+	<name>arina</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<jackson.version>2.9.9</jackson.version>
+		<commons-io.version>2.6</commons-io.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<spring.version>5.1.8.RELEASE</spring.version>
+		<camel.version>2.24.1</camel.version>
+	</properties>
+
+	<modules>
+		<module>arina-maplab</module>
+		<module>camel-arina-maplab</module>
+	</modules>
+
+	<build>
+   		<plugins>
+   			<plugin>
+   				<groupId>org.apache.maven.plugins</groupId>
+   				<artifactId>maven-release-plugin</artifactId>
+   				<version>2.7</version>
+   				<configuration>
+   					<autoversionsubmodules>true</autoversionsubmodules>
+   				</configuration>
+   			</plugin>
+   		</plugins>
+	</build>
+</project>

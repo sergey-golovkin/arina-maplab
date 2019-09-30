@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="logical" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="logical functions">
+		<component name="not">
+			<sources>
+				<datapoint name="value" type="xs:boolean"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = ( ! value)</short>
+				<long>If value is true then result is false, otherwise true.</long>
+			</description>
+		</component>
+		<component name="or" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:boolean"/>
+				<datapoint name="value2" type="xs:boolean"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 || value2)</short>
+				<long>If either values are true result is true, otherwise false.</long>
+			</description>
+		</component>
+		<component name="xor" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:boolean"/>
+				<datapoint name="value2" type="xs:boolean"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 ^ value2)</short>
+				<long>Exclusive-Or operator returns true when both inputs are different. If both are same it returns false.</long>
+			</description>
+		</component>
+		<component name="and" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:boolean"/>
+				<datapoint name="value2" type="xs:boolean"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 &amp;&amp; value2)</short>
+				<long>If both values are true result is true, otherwise false.</long>
+			</description>
+		</component>
+		<component name="equal" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 == value2)</short>
+				<long>Result is true if value1 is equal value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="greater" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 &gt; value2)</short>
+				<long>Result is true if value1 is greater than value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="less" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 &lt; value2)</short>
+				<long>Result is true if value1 is less than value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="not equal" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 != value2)</short>
+				<long>Result is true if value1 is not equal value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="equal or greater" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 &gt;= value2)</short>
+				<long>Result is true if value1 is greater or equal than value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="equal or less" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="mf:atomic"/>
+				<datapoint name="value2" type="mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = (value1 &lt;= value2)</short>
+				<long>Result is true if value1 is less or equal than value2, otherwise false.</long>
+			</description>
+		</component>
+		<component name="in" growable="true" growablebasename="value" castinputsimpletypestocommontype="true">
+			<sources>
+				<datapoint name="value1" type="ZeroOrMore mf:atomic"/>
+				<datapoint name="value2" type="ZeroOrMore mf:atomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = in(value1, [value2,...,valueN])</short>
+				<long>Result is true if value1 presents in list of values value2, ..., otherwise false.</long>
+			</description>
+		</component>
+		<component name="nvl" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:untypedAtomic"/>
+				<datapoint name="value2" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = nvl(value, ifNullValue[, ifNullValue ...])</short>
+				<long>Returns first non null value.</long>
+			</description>
+		</component>
+		<component name="is null">
+			<sources>
+				<datapoint name="value" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = is null(value)</short>
+				<long>Returns true if the value is null, otherwise returns false.</long>
+			</description>
+		</component>
+		<component name="is not null">
+			<sources>
+				<datapoint name="value" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:boolean"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = is not null(value)</short>
+				<long>Returns false if the value is null, otherwise returns true.</long>
+			</description>
+		</component>
+	</group>	
+</mapping>
