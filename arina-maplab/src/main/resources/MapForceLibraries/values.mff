@@ -50,5 +50,20 @@
 				<long>Returns the current datetime value.</long>
 			</description>
 		</component>
+		<component name="current-timemillis">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:long"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = current-timemillis</short>
+				<long>Returns the current datetime value in milliseconds since epoch Jan 1 , 1970 00:00:00</long>
+			</description>
+		</component>
 	</group>	
 </mapping>

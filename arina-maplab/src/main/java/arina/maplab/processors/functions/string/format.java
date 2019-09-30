@@ -6,9 +6,7 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class format extends MapLibraryFunctionProcessor
 {
@@ -24,8 +22,10 @@ public class format extends MapLibraryFunctionProcessor
         Object[] params = new Object[this.definition.getInputList().size() - 1];
 
         for(int i = 1; i < this.definition.getInputList().size(); i++)
-            params[i - 1] = computeInputParameter(i, context).getValue();
-
+        {
+            Object value = computeInputParameter(i, context).getValue();
+            params[i - 1] = (value instanceof XMLGregorianCalendar ? ((XMLGregorianCalendar)value).toGregorianCalendar().getTime() : value);
+        }
         return new MapValue(this, String.format(format.getValue(String.class), params));
     }
 }

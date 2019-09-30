@@ -5,6 +5,23 @@
 		<implementation language="builtin"/>
 	</implementations>
 	<group name="array/nodes functions">
+		<component name="as-array" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:untypedAtomic"/>
+				<datapoint name="value2" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="ZeroOrMore mf:no-sequence"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = as-array(value1, [value2,...,valueN])</short>
+				<long>Creates an array of the values.</long>
+			</description>
+		</component>
 		<component name="position">
 			<sources>
 				<datapoint name="nodes/rows" type="ZeroOrMore mf:no-sequence"/>
