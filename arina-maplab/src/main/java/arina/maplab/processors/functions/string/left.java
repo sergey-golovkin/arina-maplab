@@ -6,11 +6,9 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-import java.util.Arrays;
-
-public class split extends MapLibraryFunctionProcessor
+public class left extends MapLibraryFunctionProcessor
 {
-    public split(IMapComponentDefinition definition, Integer growable)
+    public left(IMapComponentDefinition definition, Integer growable)
     {
         super(definition, growable);
     }
@@ -19,12 +17,16 @@ public class split extends MapLibraryFunctionProcessor
     public IMapValue getValue(String index, IMapContext context) throws Exception
     {
         IMapValue value = computeInputParameter(0, context);
-        IMapValue regex = computeInputParameter(1, context);
-        if(value.isNotNull() && regex.isNotNull())
+        IMapValue substringLength = computeInputParameter(1, context);
+        if(value.isNotNull() && substringLength.isNotNull())
         {
-            return new MapValue(this, Arrays.asList(value.getValue(String.class).split(regex.getValue(String.class))));
+            String str = value.getValue(String.class);
+            int end = substringLength.getValue(Integer.class);
+            if(end > str.length())
+                end = str.length();
+            return new MapValue(this, str.substring(0, end));
         }
 
-        return value;
+        return MapValue.NULL;
     }
 }

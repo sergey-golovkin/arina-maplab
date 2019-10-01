@@ -18,15 +18,20 @@ public class substring extends MapLibraryFunctionProcessor
     {
         IMapValue value = computeInputParameter(0, context);
         IMapValue beginIndex = computeInputParameter(1, context);
-        IMapValue endIndex = computeInputParameter(2, context);
+        IMapValue substringLength = computeInputParameter(2, context);
         if(value.isNotNull() && beginIndex.isNotNull())
         {
-            if(endIndex.isNotNull())
+            int begin = beginIndex.getValue(Integer.class);
+            if(substringLength.isNotNull())
             {
-                return new MapValue(this, value.getValue(String.class).substring(beginIndex.getValue(Integer.class), endIndex.getValue(Integer.class)));
+                String str = value.getValue(String.class);
+                int end = begin + substringLength.getValue(Integer.class);
+                if(end > str.length())
+                    end = str.length();
+                return new MapValue(this, str.substring(begin, end));
             }
             else
-                return new MapValue(this, value.getValue(String.class).substring(beginIndex.getValue(Integer.class)));
+                return new MapValue(this, value.getValue(String.class).substring(begin));
         }
 
         return MapValue.NULL;

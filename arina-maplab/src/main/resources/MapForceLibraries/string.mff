@@ -58,7 +58,7 @@
 			<sources>
 				<datapoint name="value" type="xs:string"/>
 				<datapoint name="beginIndex" type="xs:decimal"/>
-				<datapoint name="endIndex" type="xs:decimal" connectiontype="0"/>
+				<datapoint name="substringLength" type="xs:decimal" connectiontype="0"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:string"/>
@@ -68,8 +68,42 @@
 				</implementation>
 			</implementations>
 			<description>
-				<short>result = substring(value, beginIndex [,endIndex])</short>
-				<long>Returns a string that is a substring of this string. The substring begins at the specified beginIndex and extends to the character at index endIndex - 1. Thus the length of the substring is endIndex - beginIndex.</long>
+				<short>result = substring(value, beginIndex [, substringLength])</short>
+				<long>Returns a portion of string, beginning at beginIndex, substringLength characters long.</long>
+			</description>
+		</component>
+		<component name="left">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="substringLength" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = left(value, substringLength)</short>
+				<long>Extracts the first substringLength characters (leftmost) from a string.</long>
+			</description>
+		</component>
+		<component name="right">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="substringLength" type="xs:decimal"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = right(value, substringLength)</short>
+				<long>Extracts the first substringLength characters (rightmost) from a string.</long>
 			</description>
 		</component>
 		<component name="starts">
