@@ -2,10 +2,13 @@ package arina.maplab.processors.functions.logical;
 
 import arina.maplab.definitions.IMapComponentDefinition;
 import arina.maplab.processors.contexts.IMapContext;
+import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import arina.utils.TypesUtils;
+
+import java.util.List;
 
 public class in extends MapLibraryFunctionProcessor
 {
@@ -31,8 +34,19 @@ public class in extends MapLibraryFunctionProcessor
             {
                 if (result.isNotNull())
                 {
-                    if(op1.equals(TypesUtils.toString(result.getValue())))
-                        return MapValue.TRUE;
+                    if (result.getValue() instanceof List)
+                    {
+                        for (Object el : ((List) result.getValue()))
+                        {
+                            if(op1.equals(TypesUtils.toString(el)))
+                                return MapValue.TRUE;
+                        }
+                    }
+                    else
+                    {
+                        if(op1.equals(TypesUtils.toString(result.getValue())))
+                            return MapValue.TRUE;
+                    }
                 }
             }
         }
