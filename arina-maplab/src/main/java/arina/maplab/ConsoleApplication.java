@@ -20,7 +20,7 @@ public class ConsoleApplication
 
         ArrayList<String> arrayList = new ArrayList<>();
         //arrayList.add("classpath:examples/arrayxml_read_and.mfd");
-        arrayList.add("file:D:/My/work/7.0_JRE8_CAM2.22/_XXX_/examples/string_all.mfd");
+        arrayList.add("file:D:\\My\\work\\7.0_JRE8_CAM2.22\\_XXX_\\examples\\ifelse.mfd");
         MfdModel model = new MfdModel(MapModel.load(arrayList, false));
         MapProcessor processor = new MapProcessor(model);
         for(Map.Entry<String, IMapValue> item : processor.getOutputs().entrySet())

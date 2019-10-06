@@ -32,5 +32,4 @@ public class MfdOutputDefinition extends MfdSTDefinition
     {
         return true;
     }
-
 }

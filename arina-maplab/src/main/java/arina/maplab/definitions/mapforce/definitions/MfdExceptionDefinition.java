@@ -10,4 +10,11 @@ public class MfdExceptionDefinition extends MfdSTDefinition
     {
         return new MapExceptionProcessor(this);
     }
+
+
+    @Override
+    public boolean isOutput()
+    {
+        return true;
+    }
 }
