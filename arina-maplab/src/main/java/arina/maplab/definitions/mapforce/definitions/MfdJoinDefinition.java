@@ -44,13 +44,7 @@ public class MfdJoinDefinition extends MfdVariableDefinition
         return ("/".equals(path) ? "" : path) + "/" + entry.getName();
     }
 
-    @Override
-    protected String addInstancePath(String path, int instanceId, Entry entry)
-    {
-        return path + "/" + instanceId;
-    }
-
-    protected void addFieldDef(String path, Entry entry) throws Exception
+    protected boolean addFieldDef(String path, Entry entry) throws Exception
     {
 //        if("/".equals(path))
 //        {
@@ -63,6 +57,7 @@ public class MfdJoinDefinition extends MfdVariableDefinition
 //            Class fieldClass = Reflection.forName(Reflection.normalizeType(m.getGenericReturnType().getTypeName()));
 //            fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), "attribute".equals(entry.getType())));
 //        }
+        return false;
     }
 
     @Override

@@ -26,24 +26,7 @@ public class MfdJSONDefinition extends MfdVariableDefinition
     }
 
     @Override
-    protected String addInstancePath(String path, int instanceId, Entry entry)
-    {
-        if("json-property".equals(entry.getType()))
-        {
-            if(first)
-            {
-                first = false;
-                return path;
-            }
-            else
-                return path + "/" + instanceId;
-        }
-        else
-            return path;
-    }
-
-    @Override
-    protected void addFieldDef(String path, Entry entry) throws Exception
+    protected boolean addFieldDef(String path, Entry entry) throws Exception
     {
         if("json-property".equals(entry.getType()) || ("/".equals(path) && "root".equals(entry.getName())))
         {
@@ -60,6 +43,7 @@ public class MfdJSONDefinition extends MfdVariableDefinition
                         if ("object".equals(name))
                         {
                             fields.put(path, new FieldDef(LinkedHashMap.class, true, false));
+                            return true;
                         }
                         else if ("array".equals(name))
                         {
@@ -68,12 +52,14 @@ public class MfdJSONDefinition extends MfdVariableDefinition
                         else
                         {
                             fields.put(path, new FieldDef(TypesUtils.getClass(name), true, false));
+                            return true;
                         }
                     }
                 }
                 else if ("object".equals(name))
                 {
                     fields.put(path, new FieldDef(LinkedHashMap.class, false, false));
+                    return true;
                 }
                 else if ("array".equals(name))
                 {
@@ -82,9 +68,17 @@ public class MfdJSONDefinition extends MfdVariableDefinition
                 else
                 {
                     fields.put(path, new FieldDef(TypesUtils.getClass(name), false, false));
+                    return true;
                 }
             }
         }
+        return false;
+    }
+
+    @Override
+    protected String correctInstancePath(String path)
+    {
+        return path.equals("/0") ? path : path.substring(2);
     }
 
     @Override

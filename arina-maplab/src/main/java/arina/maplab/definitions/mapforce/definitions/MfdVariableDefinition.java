@@ -101,7 +101,7 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
                 for (Entry e : root.getEntry())
                 {
                     instanceId += (e.getClone() != null ? 1 : 0);
-                    processEntries(globalPrefix, e, "/", connectorsMap, "/" + instanceId);
+                    processEntries(globalPrefix, e, "/", connectorsMap, "", instanceId);
                 }
             }
         }
@@ -114,7 +114,7 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
             String index = globalPrefix + entry.getInpkey();
             ConnectorDef cd = getConnectorDef(index);
             cd.path = getEntryName(path, entry);
-            cd.pathsInstanceId = instancePath;
+            cd.pathsInstanceId = correctInstancePath(instancePath);
             cd.isInput = true;
             inputList.add(index);
             connectorsMap.put(index, this);
@@ -126,7 +126,7 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
             String index = globalPrefix + entry.getOutkey();
             ConnectorDef cd = getConnectorDef(index);
             cd.path = getEntryName(path, entry);
-            cd.pathsInstanceId = instancePath;
+            cd.pathsInstanceId = correctInstancePath(instancePath);
             cd.isInput = false;
             outputList.add(index);
             connectorsMap.put(index, this);
@@ -138,7 +138,7 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
             String index = globalPrefix + getEntryName(path, entry);
             ConnectorDef cd = getConnectorDef(index);
             cd.path = getEntryName(path, entry);
-            cd.pathsInstanceId = instancePath;
+            cd.pathsInstanceId = correctInstancePath(instancePath);
             cd.isInput = "input".equals(usageKind);
             if( ! cd.isInput)
                 outputList.add(index);
@@ -146,16 +146,21 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
         }
     }
 
-    private void processEntries(String globalPrefix, Entry entry, String path, Map<String, IMapComponentDefinition> connectorsMap, String instancePath) throws Exception
+    private void processEntries(String globalPrefix, Entry entry, String path, Map<String, IMapComponentDefinition> connectorsMap, String instancePath, int instanceId) throws Exception
     {
-        addConnectors(globalPrefix, entry, path, connectorsMap, instancePath);
-        addFieldDef(addPath(path, entry), entry);
+        boolean isField = addFieldDef(addPath(path, entry), entry);
+        addConnectors(globalPrefix, entry, path, connectorsMap, instancePath + "/" + instanceId);
 
-        int instanceId = 0;
+        if(isField)
+        {
+            instancePath += "/" + instanceId;
+            instanceId = 0;
+        }
+
         for(Entry e : entry.getEntry())
         {
             instanceId += (e.getClone() != null ? 1 : 0);
-            processEntries(globalPrefix, e, addPath(path, entry), connectorsMap, addInstancePath(instancePath, instanceId, entry));
+            processEntries(globalPrefix, e, addPath(path, entry), connectorsMap, instancePath, instanceId);
         }
     }
 
@@ -187,11 +192,14 @@ public abstract class MfdVariableDefinition extends MfdComponentDefinition
         }
     }
 
+    protected String correctInstancePath(String path)
+    {
+        return path;
+    }
+
     protected abstract String getEntryName(String path, Entry entry);
 
     protected abstract String addPath(String path, Entry entry) throws Exception;
 
-    protected abstract String addInstancePath(String path, int instanceId, Entry entry) throws Exception;
-
-    protected abstract void addFieldDef(String path, Entry entry) throws Exception;
+    protected abstract boolean addFieldDef(String path, Entry entry) throws Exception;
 }
