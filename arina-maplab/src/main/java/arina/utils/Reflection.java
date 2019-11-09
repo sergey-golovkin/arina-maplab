@@ -1,6 +1,9 @@
 package arina.utils;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.datatype.DatatypeConfigurationException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,6 +50,11 @@ public class Reflection
 
     public static String normalizeName(String name)
     {
+    	for(int index = name.indexOf("-"); index >= 0; index = name.indexOf("-"))
+        {
+	        name = name.substring(0, index) + name.substring(index + 1, index + 2).toUpperCase() + name.substring(index + 2);
+        }
+
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
@@ -56,29 +64,65 @@ public class Reflection
 
         for (Map.Entry<String, Object> e : object.entrySet())
         {
-            Method m = root.getClass().getMethod("get" + Reflection.normalizeName(e.getKey()));
-            Class fieldClass = Reflection.forName(Reflection.normalizeType(m.getGenericReturnType().getTypeName()));
+            String name = e.getKey();
+            Method method = null;
+            Class fieldClass = null;
+
+	        try
+            {
+	            method = root.getClass().getMethod("get" + Reflection.normalizeName(name));
+            }
+            catch (NoSuchMethodException ex)
+            {
+                try
+                {
+                    method = root.getClass().getMethod("is" + Reflection.normalizeName(name));
+                }
+                catch (NoSuchMethodException ex2)
+                {
+                    for(Field field : root.getClass().getDeclaredFields())
+                    {
+                        XmlElements annotation = field.getDeclaredAnnotation(XmlElements.class);
+                        if (annotation != null)
+                        {
+                            for(XmlElement element :annotation.value())
+                            {
+                                if(element.name().equals(name))
+                                {
+                                    name = field.getName();
+                                    method = root.getClass().getMethod("get" + Reflection.normalizeName(name));
+                                    fieldClass = element.type();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(fieldClass == null)
+                fieldClass = Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName()));
+
             if(e.getValue() instanceof Map)
             {
-                setValue(root, e.getKey(), map2Object((Map<String, Object>) e.getValue(), fieldClass));
+                setValue(root, name, map2Object((Map<String, Object>) e.getValue(), fieldClass));
             }
             else if(e.getValue() instanceof List)
             {
-                ArrayList<Object> arrayList = (ArrayList<Object>) m.invoke(root);
+                ArrayList<Object> arrayList = (ArrayList<Object>) method.invoke(root);
                 for(Object item : (List) e.getValue())
                 {
                     arrayList.add(map2Object((Map<String, Object>) item, fieldClass));
                 }
-
             }
             else
             {
                 if(TypesUtils.isSimpleType(fieldClass))
-                    setValue(root, e.getKey(), e.getValue());
+                    setValue(root, name, e.getValue());
                 else
                 {
                     Object o = fieldClass.newInstance();
-                    setValue(root, e.getKey(), o);
+                    setValue(root, name, o);
                     setValue(o, e.getKey(), e.getValue());
                 }
             }
