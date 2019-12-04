@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;enumeration value="23"/>
  *             &lt;enumeration value="30"/>
  *             &lt;enumeration value="31"/>
+ *             &lt;enumeration value="32"/>
  *           &lt;/restriction>
  *         &lt;/simpleType>
  *       &lt;/attribute>

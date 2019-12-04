@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  *                           &lt;attribute name="XSLTTargetEncoding" type="{http://www.w3.org/2001/XMLSchema}string" />
  *                           &lt;attribute name="ShowSchemaTypes" type="{http://www.w3.org/2001/XMLSchema}int" />
  *                           &lt;attribute name="ShowAnnotations" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *                           &lt;attribute name="ShowLibraryNameInHeader" type="{http://www.w3.org/2001/XMLSchema}int" />
  *                         &lt;/restriction>
  *                       &lt;/complexContent>
  *                     &lt;/complexType>
@@ -204,6 +205,7 @@ public class Mapping {
      *                 &lt;attribute name="XSLTTargetEncoding" type="{http://www.w3.org/2001/XMLSchema}string" />
      *                 &lt;attribute name="ShowSchemaTypes" type="{http://www.w3.org/2001/XMLSchema}int" />
      *                 &lt;attribute name="ShowAnnotations" type="{http://www.w3.org/2001/XMLSchema}int" />
+     *                 &lt;attribute name="ShowLibraryNameInHeader" type="{http://www.w3.org/2001/XMLSchema}int" />
      *               &lt;/restriction>
      *             &lt;/complexContent>
      *           &lt;/complexType>
@@ -506,6 +508,7 @@ public class Mapping {
          *       &lt;attribute name="XSLTTargetEncoding" type="{http://www.w3.org/2001/XMLSchema}string" />
          *       &lt;attribute name="ShowSchemaTypes" type="{http://www.w3.org/2001/XMLSchema}int" />
          *       &lt;attribute name="ShowAnnotations" type="{http://www.w3.org/2001/XMLSchema}int" />
+         *       &lt;attribute name="ShowLibraryNameInHeader" type="{http://www.w3.org/2001/XMLSchema}int" />
          *     &lt;/restriction>
          *   &lt;/complexContent>
          * &lt;/complexType>
@@ -527,6 +530,8 @@ public class Mapping {
             protected Integer showSchemaTypes;
             @XmlAttribute(name = "ShowAnnotations")
             protected Integer showAnnotations;
+            @XmlAttribute(name = "ShowLibraryNameInHeader")
+            protected Integer showLibraryNameInHeader;
 
             /**
              * Gets the value of the selectedLanguage property.
@@ -646,6 +651,30 @@ public class Mapping {
              */
             public void setShowAnnotations(Integer value) {
                 this.showAnnotations = value;
+            }
+
+            /**
+             * Gets the value of the showLibraryNameInHeader property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link Integer }
+             *     
+             */
+            public Integer getShowLibraryNameInHeader() {
+                return showLibraryNameInHeader;
+            }
+
+            /**
+             * Sets the value of the showLibraryNameInHeader property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link Integer }
+             *     
+             */
+            public void setShowLibraryNameInHeader(Integer value) {
+                this.showLibraryNameInHeader = value;
             }
 
         }

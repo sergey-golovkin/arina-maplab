@@ -354,6 +354,7 @@
 									<xs:attribute name="XSLTTargetEncoding" type="xs:string"/>
 									<xs:attribute name="ShowSchemaTypes" type="xs:int"/>
 									<xs:attribute name="ShowAnnotations" type="xs:int"/>
+									<xs:attribute name="ShowLibraryNameInHeader" type="xs:int"/>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="description" type="xs:string" minOccurs="0"/>
