@@ -19,7 +19,7 @@
 				</implementation>
 			</implementations>
 			<description>
-				<short>object = unmarshal(jsonString, dateFormat)</short>
+				<short>object = unmarshal(jsonString, dateFormat, [objectType])</short>
 				<long>Returns unmarshalled object from JSON string.</long>
 			</description>
 		</component>
