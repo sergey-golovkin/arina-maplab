@@ -65,8 +65,18 @@ public class UntypedObjectDeserializerArraySupport extends UntypedObjectDeserial
 
         if (key == null) {
             LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>(4);
-            result.put(checkValue(key1), value1);
-            result.put(checkValue(key2), value2);
+            if(checkValue(key1).equals(checkValue(key2)))
+            {
+                ArrayList<Object> array = new ArrayList<>();
+                result.put(checkValue(key1), array);
+                array.add(value1);
+                array.add(value2);
+            }
+            else
+            {
+                result.put(checkValue(key1), value1);
+                result.put(checkValue(key2), value2);
+            }
             return result;
         }
         // And then the general case; default map size is 16

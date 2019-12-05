@@ -5,9 +5,8 @@ import arina.maplab.definitions.mapforce.definitions.MfdVariableDefinition;
 import arina.maplab.processors.contexts.*;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
-import arina.utils.Marshall;
-import arina.utils.Unmarshall;
-import arina.utils.TypesUtils;
+import arina.utils.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -15,7 +14,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 {
     final private Map<Object, String> instances = new IdentityHashMap<>();
     final private Map<String, MfdVariableDefinition.ConnectorDef> connectors;
-    final protected Map<String, MfdVariableDefinition.FieldDef> fields;
+    final protected Map<String, FieldDef> fields;
     final private String usageKind;
     final private String componentInput;
     final private String componentOutput;
@@ -24,7 +23,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
     protected boolean isLoaded = false;
     protected long scn = 0;
 
-    public MapVariableProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, MfdVariableDefinition.FieldDef> fields, String usageKind, String componentInput, String componentOutput)
+    public MapVariableProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, FieldDef> fields, String usageKind, String componentInput, String componentOutput)
     {
         super(definition);
 
@@ -202,7 +201,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             while (inputIndexes.size() > 0)
                 computeSelf(root, inputIndexes, inputPaths, context, "");
 
-            resetTypes(root, "/");
+            Reflection.resetTypes(root, "/", fields);
 
             isLoaded = true;
             scn = System.currentTimeMillis();
@@ -252,7 +251,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         for(String name : path.substring(1).split("/"))
         {
             currentPath += "/" + name;
-            MfdVariableDefinition.FieldDef field = this.fields.get(currentPath);
+            FieldDef field = this.fields.get(currentPath);
 
             if(segIndex == segCount - 1) // конечное значение
             {
@@ -288,11 +287,11 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private Map processSingleObject(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, MfdVariableDefinition.FieldDef field) throws Exception
+    private Map processSingleObject(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
     {
         if (two.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
-            object.put(name, clone(valueItem));
+            object.put(name, Reflection.clone(valueItem));
         }
         else // just create object template
         {
@@ -304,7 +303,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         return object;
     }
 
-    private void processObjectArray(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, MfdVariableDefinition.FieldDef field) throws Exception
+    private void processObjectArray(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
     {
         ArrayList<Object> array = (ArrayList<Object>) object.get(name);
         if(array == null)
@@ -326,7 +325,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private Map processTree(Map object, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, MfdVariableDefinition.FieldDef field)
+    private Map processTree(Map object, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field)
     {
         Object o = object.get(name);
         if(field.isArray) // массив объектов
@@ -366,11 +365,11 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         return (Map) o;
     }
 
-    private Object computeArrayItem(List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, MfdVariableDefinition.FieldDef field, Object valueItem) throws Exception
+    private Object computeArrayItem(List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, FieldDef field, Object valueItem) throws Exception
     {
         if (two.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
-            Object object = clone(valueItem);
+            Object object = Reflection.clone(valueItem);
             instances.put(object, connectorDef.pathsInstanceId.substring(1).split("/")[segIndex]);
             return object;
         }
@@ -391,12 +390,12 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             if (inputIndex.equals(componentInput) && "stringparse".equals(usageKind) && value.getValue() instanceof String)
                 root = unmarshal(value.getValue());
             else
-                root = clone(value.getValue());
+                root = Reflection.clone(value.getValue());
         }
         else // если есть соединение на уровне корня данных
         {
             if(two.equals(definition.getLink(inputIndex).getValue())) // если тап связи CopyAll
-                root = clone(value.getValue());
+                root = Reflection.clone(value.getValue());
             else
             {
                 root = new LinkedHashMap<>();
@@ -408,7 +407,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private void putTagValue(Map object, MfdVariableDefinition.FieldDef field, Object value)
+    private void putTagValue(Map object, FieldDef field, Object value)
     {
         if(field.ifValueClazz != null) // если это всего лишь тег с атрибутами
         {
@@ -462,85 +461,5 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             inputIndexes.remove(index);
             inputPaths.remove(index);
         });
-    }
-
-    private Object clone(Object value) throws IOException
-    {
-        return Unmarshall.json(Marshall.json(value, "yyyy-MM-dd'T'HH:mm:ss.SSSSXXX"), null, "yyyy-MM-dd'T'HH:mm:ss.SSSSXXX");
-    }
-
-    private void resetTypes(Object object, String path) throws Exception
-    {
-        if(object instanceof List)
-        {
-            MfdVariableDefinition.FieldDef field = fields.get(path);
-            if(field != null)
-            {
-                List list = (List) object;
-                for (int i = 0; i < list.size(); i++)
-                {
-                    Object item = list.get(i);
-
-                    if (item instanceof List || item instanceof Map)
-                        resetTypes(item, path);
-                    else
-                        list.set(i, TypesUtils.getValue(field.clazz, item));
-                }
-            }
-        }
-        else if(object instanceof Map)
-        {
-            Map<String, Object> map = (Map) object;
-            for (Map.Entry<String, Object> e : map.entrySet())
-            {
-                MfdVariableDefinition.FieldDef field = fields.get(path + e.getKey());
-                if (field != null) // если, тег имеет хотя бы одно соединение, то описание есть, если не подключено, то нам это не интересно.
-                {
-                    Object o = map.get(e.getKey());
-                    if(field.isArray && ! (o instanceof List)) // если ожидается массив, но он содержит только одно значени, то создается не массив, а само значение.
-                    {                                       // поправим это
-                        List list = new ArrayList();
-                        list.add(o);
-                        map.put(e.getKey(), list);
-                    }
-
-                    if(o instanceof List) // если пришел массив
-                    {
-                        List list = (List) map.get(e.getKey());
-                        for(int i = 0; i < list.size(); i++)
-                        {
-                            Object item = list.get(i);
-
-                            if(field.ifValueClazz != null) // обработка тегов с аттрибутами
-                            {
-                                if(item instanceof Map) // тег представлен как Map, если есть хотя бы один атрибут,
-                                {
-                                    Map map2 = (Map) item;
-                                    if (map2.containsKey("value"))  // а само значение как элемент с именем "value"
-                                        map2.put("value", TypesUtils.getValue(field.ifValueClazz, map2.get("value")));
-                                }
-                                else // а если атрибутов нет, то Map не создается
-                                {    // поправим это
-                                    Map map2 = new LinkedHashMap<>();
-                                    list.set(i, map2);
-                                    map2.put("value", TypesUtils.getValue(field.ifValueClazz, item)); // а если был не Map, то значит само значени, присвоим его
-                                }
-                            }
-
-                            resetTypes(item, path + e.getKey() + "/");
-                        }
-                    }
-                    else if(o instanceof Map) // если пришел объект или тег с атрибутами
-                    {
-                        if(field.ifValueClazz != null && ((Map)o).containsKey("value")) // тег представлен как Map, если есть хотя бы один атрибут
-                            ((Map)o).put("value", TypesUtils.getValue(field.ifValueClazz, ((Map)o).get("value"))); // а само значение как элемент с именем "value"
-
-                        resetTypes(o, path + e.getKey() + "/");
-                    }
-                    else
-                        map.put(e.getKey(), TypesUtils.getValue(field.clazz, o)); // это просто значение
-                }
-            }
-        }
     }
 }

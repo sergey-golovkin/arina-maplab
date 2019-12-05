@@ -4,6 +4,7 @@ import arina.maplab.definitions.IMapComponentDefinition;
 import arina.maplab.definitions.mapforce.definitions.MfdVariableDefinition;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
+import arina.utils.FieldDef;
 import arina.utils.Marshall;
 import arina.utils.Reflection;
 import arina.utils.Unmarshall;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class MapXMLProcessor extends MapVariableProcessor
 {
-    public MapXMLProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, MfdVariableDefinition.FieldDef> fields, String usageKind, String componentInput, String componentOutput)
+    public MapXMLProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, FieldDef> fields, String usageKind, String componentInput, String componentOutput)
     {
         super(definition, connectors, fields, usageKind, componentInput, componentOutput);
     }

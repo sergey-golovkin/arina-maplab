@@ -5,10 +5,14 @@ import arina.maplab.definitions.mapforce.model.Component;
 import arina.maplab.definitions.mapforce.model.Entry;
 import arina.maplab.processors.IMapComponentProcessor;
 import arina.maplab.processors.MapXMLProcessor;
+import arina.utils.FieldDef;
 import arina.utils.Reflection;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -104,9 +108,47 @@ public class MfdXMLDefinition extends MfdVariableDefinition
         else
         {
             Class objectClass = fields.get(FilenameUtils.getFullPathNoEndSeparator(path)).clazz;
-            Method m = Reflection.getMethod(objectClass, "get" + Reflection.normalizeName(FilenameUtils.getName(path)));
-            Class fieldClass = Reflection.forName(Reflection.normalizeType(m.getGenericReturnType().getTypeName()));
-            fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), "attribute".equals(entry.getType())));
+            String n = Reflection.normalizeName(FilenameUtils.getName(path));
+            Method m = null;
+            Class fieldClass;
+
+            try
+            {
+                m = Reflection.getMethod(objectClass, "get" + n);
+            }
+            catch (NoSuchMethodException e2)
+            {
+                try
+                {
+                    m = Reflection.getMethod(objectClass, "is" + n);
+                }
+                catch (NoSuchMethodException ex2)
+                {
+                    for(Field field : objectClass.getDeclaredFields())
+                    {
+                        XmlElements annotation = field.getDeclaredAnnotation(XmlElements.class);
+                        if (annotation != null)
+                        {
+                            for(XmlElement element :annotation.value())
+                            {
+                                if(element.name().equals(n))
+                                {
+                                    m = objectClass.getMethod("get" + Reflection.normalizeName(field.getName()));
+                                    fieldClass = element.type();
+                                    fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), false));
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(m != null)
+            {
+                fieldClass = Reflection.forName(Reflection.normalizeType(m.getGenericReturnType().getTypeName()));
+                fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), "attribute".equals(entry.getType())));
+            }
         }
         return true;
     }

@@ -21,8 +21,8 @@ public class marshal extends MapLibraryFunctionProcessor
     public IMapValue getValue(String index, IMapContext context) throws Exception
     {
         IMapValue object = computeInputParameter(0, context);
-        IMapValue dataType = computeInputParameter(1, context);
+        IMapValue objectType = computeInputParameter(1, context);
 
-        return new MapValue(this, Marshall.xml(Reflection.map2Object(object.getValue(Map.class), Class.forName(dataType.getValue(String.class)))));
+        return new MapValue(this, Marshall.xml(Reflection.map2Object(object.getValue(Map.class), Class.forName(objectType.getValue(String.class)))));
     }
 }

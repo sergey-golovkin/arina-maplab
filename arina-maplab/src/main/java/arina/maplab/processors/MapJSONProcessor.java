@@ -4,13 +4,14 @@ import arina.maplab.definitions.IMapComponentDefinition;
 import arina.maplab.definitions.mapforce.definitions.MfdVariableDefinition;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
+import arina.utils.FieldDef;
 import arina.utils.Marshall;
 import arina.utils.Unmarshall;
 import java.util.Map;
 
 public class MapJSONProcessor extends MapVariableProcessor
 {
-    public MapJSONProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, MfdVariableDefinition.FieldDef> fields, String usageKind, String componentInput, String componentOutput)
+    public MapJSONProcessor(IMapComponentDefinition definition, Map<String, MfdVariableDefinition.ConnectorDef> connectors, Map<String, FieldDef> fields, String usageKind, String componentInput, String componentOutput)
     {
         super(definition, connectors, fields, usageKind, componentInput, componentOutput);
     }

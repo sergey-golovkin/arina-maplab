@@ -3,6 +3,7 @@ package arina.maplab.definitions.mapforce.definitions;
 import arina.maplab.definitions.mapforce.model.Entry;
 import arina.maplab.processors.IMapComponentProcessor;
 import arina.maplab.processors.MapJSONProcessor;
+import arina.utils.FieldDef;
 import arina.utils.TypesUtils;
 import java.util.LinkedHashMap;
 

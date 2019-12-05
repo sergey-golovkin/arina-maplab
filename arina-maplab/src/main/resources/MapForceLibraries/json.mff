@@ -9,6 +9,7 @@
 			<sources>
 				<datapoint name="jsonString" type="xs:string"/>
 				<datapoint name="dateFormat" type="xs:string" connectiontype="0"/>
+				<datapoint name="objectType" type="xs:string" connectiontype="0"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:untypedAtomic"/>

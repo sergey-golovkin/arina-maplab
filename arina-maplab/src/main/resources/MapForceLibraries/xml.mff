@@ -8,6 +8,7 @@
 		<component name="unmarshal">
 			<sources>
 				<datapoint name="xmlString" type="xs:string"/>
+				<datapoint name="objectType" type="xs:string" connectiontype="0"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:untypedAtomic"/>
@@ -17,7 +18,7 @@
 				</implementation>
 			</implementations>
 			<description>
-				<short>object = unmarshal(xmlString)</short>
+				<short>object = unmarshal(xmlString, [objectType])</short>
 				<long>Returns unmarshalled object from XML string.</long>
 			</description>
 		</component>
