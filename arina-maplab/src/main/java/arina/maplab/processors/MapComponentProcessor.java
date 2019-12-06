@@ -33,7 +33,10 @@ abstract public class MapComponentProcessor implements IMapComponentProcessor
 
     protected IMapValue computeInputParameter(int parameterIndex, IMapContext context) throws Exception
     {
-        return computeInputValue(definition.getInputList().get(parameterIndex), context);
+    	if(definition.getInputList().size() > parameterIndex)
+            return computeInputValue(definition.getInputList().get(parameterIndex), context);
+    	else
+    		return MapValue.NULL;
     }
 
     protected IMapValue computeInputValue(String input, IMapContext context) throws Exception
