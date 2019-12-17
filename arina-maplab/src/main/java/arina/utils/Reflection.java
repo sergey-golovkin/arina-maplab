@@ -102,6 +102,9 @@ public class Reflection
                 }
             }
 
+            if(method == null)
+            	throw new NoSuchMethodException("Method get/is" + Reflection.normalizeName(name) + " for class " + root.getClass().getTypeName() + " not found.");
+	        
             if(fieldClass == null)
                 fieldClass = Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName()));
 
