@@ -4,7 +4,7 @@
 
 - MFD - Altova MapForce xml file format.
 
-# Usages
+# Usage
 To use the library from Java look at arina-maplab folded.
 
 To use the library from apache camel framework look at camel-arina-maplab folder. 
