@@ -4,7 +4,7 @@
 
 - MFD - Altova MapForce xml file format.
 
-# Usages
+# Usage
 To use the library from Java, you must initialize the model or list of models, and then pass the model to the processor for execution.
 
 An example of a program transferring input parameters to the model with the names “stringInput”, “intInput” and “dateTimeInput” and receiving a collection of output parameters and displaying their values to the console.
