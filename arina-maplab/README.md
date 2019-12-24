@@ -1,4 +1,4 @@
-Arina-MapLab is a library that implements the mapping engine.
+# Arina-MapLab is a library that implements the mapping engine.
 
 ### Supported mapping formats
 
