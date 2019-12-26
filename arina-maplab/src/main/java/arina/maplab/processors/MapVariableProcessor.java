@@ -65,7 +65,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             {
                 Object contextObject = valueContext.getValue().getValue();
                 String contextPath = valueContext.getValue().getContext();
-                if (path.startsWith(contextPath))
+                if (path.startsWith(contextPath) && ! contextPath.equals("/"))
                 {
                     if(path.equals(contextPath))
                     {
@@ -195,8 +195,8 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         {
             root = new LinkedHashMap<>();
             List<String> inputIndexes = new ArrayList<>(definition.getInputList());
-            final Map<String, String> inputPaths = new HashMap<>();
-            connectors.forEach((k, v) -> inputPaths.put(k, v.path));
+            final Map<String, Map.Entry<String, String>> inputPaths = new HashMap<>();
+            connectors.forEach((k, v) -> inputPaths.put(k, new AbstractMap.SimpleEntry<>("", v.path)));
 
             while (inputIndexes.size() > 0)
                 computeSelf(root, inputIndexes, inputPaths, context, "");
@@ -208,10 +208,10 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private void computeSelf(Object object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath) throws Exception
+    private void computeSelf(Object object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath) throws Exception
     {
         String inputIndex = inputIndexes.remove(0);
-        String path = inputPaths.remove(inputIndex);
+        String path = inputPaths.remove(inputIndex).getValue();
         IMapValue value = computeInputValue(inputIndex, context);
         if(value.isNull())
         {
@@ -243,7 +243,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private void computeMap(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, String path, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef) throws Exception
+    private void computeMap(Map object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, String path, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef) throws Exception
     {
         int segIndex = 0;
         int segCount = path.split("/").length - 1;
@@ -287,23 +287,24 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private Map processSingleObject(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
+    private Map processSingleObject(Map object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
     {
-        if (two.equals(definition.getLink(inputIndex).getValue())) // copyAll
+        if(two.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
             object.put(name, Reflection.clone(valueItem));
+            return object;
         }
         else // just create object template
         {
-            object = new LinkedHashMap<>();
-            object.put(name, object);
-            putTagValue(object, field, valueItem);
-            iterateChildren(object, inputIndexes, inputPaths, new ValueContext(context, value.create(valueItem)), currentPath, connectorDef.pathsInstanceId);
+            Map map = new LinkedHashMap<>();
+            object.put(name, map);
+            putTagValue(map, field, valueItem);
+            iterateChildren(map, inputIndexes, inputPaths, new ValueContext(context, value.create(valueItem)), currentPath, connectorDef.pathsInstanceId);
+            return map;
         }
-        return object;
     }
 
-    private void processObjectArray(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
+    private void processObjectArray(Map object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
     {
         ArrayList<Object> array = (ArrayList<Object>) object.get(name);
         if(array == null)
@@ -365,7 +366,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         return (Map) o;
     }
 
-    private Object computeArrayItem(List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, FieldDef field, Object valueItem) throws Exception
+    private Object computeArrayItem(List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, FieldDef field, Object valueItem) throws Exception
     {
         if (two.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
@@ -383,7 +384,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private void computeRoot(String inputIndex, IMapValue value, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath) throws Exception
+    private void computeRoot(String inputIndex, IMapValue value, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath) throws Exception
     {
         if(inputIndex.equals(componentInput)) // если есть соединение на уровне объекта, а не корня данных
         {
@@ -424,18 +425,20 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
-    private void iterateChildren(Map object, List<String> inputIndexes, Map<String, String> inputPaths, IMapContext context, String currentPath, String currentInstanceId) throws Exception
+    private void iterateChildren(Map object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String currentInstanceId) throws Exception
     {
         List<String> inputNewIndexes = new ArrayList<>();
-        Map<String, String> inputNewPaths = new HashMap<>();
+        Map<String, Map.Entry<String, String>> inputNewPaths = new HashMap<>();
 
         for (String index : inputIndexes)
         {
-            String path = inputPaths.get(index);
-            if (path.startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
+            Map.Entry<String, String> entry  = inputPaths.get(index);
+            String path = entry.getValue();
+            String prefix = entry.getKey();
+            if ((prefix + path).startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
             {
                 inputNewIndexes.add(index);
-                inputNewPaths.put(index, path.replaceFirst(currentPath, ""));
+                inputNewPaths.put(index, new AbstractMap.SimpleEntry<>(currentPath, (prefix + path).replaceFirst(currentPath, "")));
             }
         }
 
@@ -443,14 +446,16 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             computeSelf(object, inputNewIndexes, inputNewPaths, context, currentPath);
     }
 
-    private void removeChildren(List<String> inputIndexes, Map<String, String> inputPaths, String currentPath, String currentInstanceId)
+    private void removeChildren(List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, String currentPath, String currentInstanceId)
     {
         List<String> inputIndexesRemover = new ArrayList<>();
 
         for (String index : inputIndexes)
         {
-            String path = inputPaths.get(index);
-            if (path.startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
+            Map.Entry<String, String> entry  = inputPaths.get(index);
+            String path = entry.getValue();
+            String prefix = entry.getKey();
+            if ((prefix + path).startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
             {
                 inputIndexesRemover.add(index);
             }
