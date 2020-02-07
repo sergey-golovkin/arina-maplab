@@ -2,7 +2,6 @@ package arina.maplab.processors.functions.logical;
 
 import arina.maplab.definitions.IMapComponentDefinition;
 import arina.maplab.processors.contexts.IMapContext;
-import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
@@ -18,7 +17,7 @@ public class in extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         Object op1 = null;
         for(String item : this.definition.getInputList())

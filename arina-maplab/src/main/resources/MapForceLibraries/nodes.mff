@@ -5,23 +5,6 @@
 		<implementation language="builtin"/>
 	</implementations>
 	<group name="array/nodes functions">
-		<component name="as-array" growable="true" growablebasename="value">
-			<sources>
-				<datapoint name="value1" type="xs:untypedAtomic"/>
-				<datapoint name="value2" type="xs:untypedAtomic"/>
-			</sources>
-			<targets>
-				<datapoint name="result" type="ZeroOrMore mf:no-sequence"/>
-			</targets>
-			<implementations>
-				<implementation language="builtin">
-				</implementation>
-			</implementations>
-			<description>
-				<short>result = as-array(value1, [value2,...,valueN])</short>
-				<long>Creates an array of the values.</long>
-			</description>
-		</component>
 		<component name="position">
 			<sources>
 				<datapoint name="nodes/rows" type="ZeroOrMore mf:no-sequence"/>
@@ -110,7 +93,7 @@
 				<implementation language="builtin"/>
 			</implementations>
 			<description>
-				<short>result = sum(values)</short>
+				<short>result = sum(nodes/rows, values)</short>
 				<long>Returns the sum of all values within nodes/rows.</long>
 			</description>
 		</component>
@@ -126,7 +109,7 @@
 				<implementation language="builtin"/>
 			</implementations>
 			<description>
-				<short>result = avg(values)</short>
+				<short>result = avg(nodes/rows, values)</short>
 				<long>Returns the average value of all values within nodes/rows.</long>
 			</description>
 		</component>
@@ -142,7 +125,7 @@
 				<implementation language="builtin"/>
 			</implementations>
 			<description>
-				<short>result = max(values)</short>
+				<short>result = max(nodes/rows, values)</short>
 				<long>Returns the maximum value of all values within nodes/rows.</long>
 			</description>
 		</component>
@@ -158,7 +141,7 @@
 				<implementation language="builtin"/>
 			</implementations>
 			<description>
-				<short>result = min(values)</short>
+				<short>result = min(nodes/rows, values)</short>
 				<long>Returns the minimum value of all values within nodes/rows.</long>
 			</description>
 		</component>
@@ -177,8 +160,26 @@
 				<implementation language="builtin"/>
 			</implementations>
 			<description>
-				<short>result = concat(strings [,delimiter, prefix, suffix])</short>
+				<short>result = concat(nodes/rows, strings [,delimiter, prefix, suffix])</short>
 				<long>Joins the strings in strings delimited by delimiter.</long>
+			</description>
+		</component>
+		<component name="as-array">
+			<sources>
+				<datapoint name="nodes/rows" type="ZeroOrMore mf:no-sequence"/>
+				<datapoint name="values" type="xs:untypedAtomic"/>
+				<datapoint name="ignoreNULL" type="xs:boolean" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="ZeroOrMore xs:untypedAtomic"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = as-array(nodes/rows, values, ignoreNULL)</short>
+				<long>Creates an array of the node values.</long>
 			</description>
 		</component>
 	</group>	

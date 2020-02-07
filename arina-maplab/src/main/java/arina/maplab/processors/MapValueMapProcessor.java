@@ -48,7 +48,7 @@ public class MapValueMapProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         if(definition.getInputList().size() > 0 && ! MfdModel.isEmptyIndex(definition.getInputList().get(0)))
         {
@@ -56,5 +56,11 @@ public class MapValueMapProcessor extends MapComponentProcessor
             return p.process(value);
         }
         return MapValue.NULL;
+    }
+
+    @Override
+    public String getName(String index) throws Exception
+    {
+        return definition.getName();
     }
 }

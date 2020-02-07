@@ -245,5 +245,21 @@
 				<long>Returns a formatted string using the specified format string and arguments.</long>
 			</description>
 		</component>
+		<component name="trim">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = trim(value)</short>
+				<long>Returns a string whose value is this string, with any leading and trailing whitespace removed.</long>
+			</description>
+		</component>
 	</group>	
 </mapping>

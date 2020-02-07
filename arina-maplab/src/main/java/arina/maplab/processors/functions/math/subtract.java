@@ -16,7 +16,7 @@ public class subtract extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue value = computeInputParameter(0, context);
         IMapValue subtrahend = computeInputParameter(1, context);

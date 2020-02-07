@@ -14,7 +14,7 @@ public class is_null extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue op1 = computeInputParameter(0, context);
 

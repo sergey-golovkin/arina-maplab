@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="value" use="required">
+ *       &lt;attribute name="value">
  *         &lt;simpleType>
  *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *           &lt;/restriction>
@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "constant")
 public class Constant {
 
-    @XmlAttribute(name = "value", required = true)
+    @XmlAttribute(name = "value")
     protected String value;
     @XmlAttribute(name = "datatype", required = true)
     protected Datatype datatype;

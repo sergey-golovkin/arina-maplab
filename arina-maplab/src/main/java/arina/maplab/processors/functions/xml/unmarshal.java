@@ -10,14 +10,6 @@ import arina.maplab.value.MapValue;
 import arina.utils.FieldDef;
 import arina.utils.Reflection;
 import arina.utils.Unmarshall;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class unmarshal extends MapLibraryFunctionProcessor
@@ -28,7 +20,7 @@ public class unmarshal extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue xmlString = computeInputParameter(0, context);
         IMapValue objectType = computeInputParameter(1, context);

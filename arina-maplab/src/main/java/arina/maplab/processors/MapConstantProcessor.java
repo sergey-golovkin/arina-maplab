@@ -17,8 +17,14 @@ public class MapConstantProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         return value;
+    }
+
+    @Override
+    public String getName(String index) throws Exception
+    {
+        return definition.getName();
     }
 }

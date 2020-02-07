@@ -55,6 +55,13 @@
 						<xs:sequence>
 							<xs:element name="data" minOccurs="0">
 								<xs:complexType>
+									<xs:attribute name="type" use="optional">
+										<xs:simpleType>
+											<xs:restriction base="xs:int">
+												<xs:enumeration value="2"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
 									<xs:attribute name="name" type="xs:string"/>
 								</xs:complexType>
 							</xs:element>
@@ -68,7 +75,7 @@
 	</xs:element>
 	<xs:element name="constant">
 		<xs:complexType>
-			<xs:attribute name="value" use="required">
+			<xs:attribute name="value" use="optional">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>

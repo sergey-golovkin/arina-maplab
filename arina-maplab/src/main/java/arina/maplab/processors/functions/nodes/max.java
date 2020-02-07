@@ -7,8 +7,6 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import org.apache.commons.lang.builder.CompareToBuilder;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 public class max extends MapLibraryFunctionProcessor
@@ -19,7 +17,7 @@ public class max extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         if(index != null)
         {

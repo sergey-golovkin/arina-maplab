@@ -14,7 +14,7 @@ public class nvl extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue result = MapValue.NULL;
 

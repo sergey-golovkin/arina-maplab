@@ -141,7 +141,7 @@ public class MfdModel extends MapModel
     {
         String outputIndex = getPrefix(mc.getLibrary(), mc.getName()) + edge.getFrom();
         String inputIndex = getPrefix(mc.getLibrary(), mc.getName()) + edge.getTo();
-        linksMap.put(inputIndex, new AbstractMap.SimpleEntry<>(outputIndex, null));
+        linksMap.put(inputIndex, new AbstractMap.SimpleEntry<>(outputIndex, edge.getData() != null ? edge.getData().getType() : null));
     }
 
     private void link(String inputIndex, String outputIndex, Integer linkType, Map<String, IMapComponentDefinition> connectorsMap) throws Exception

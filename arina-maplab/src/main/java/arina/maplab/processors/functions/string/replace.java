@@ -14,15 +14,13 @@ public class replace extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue value = computeInputParameter(0, context);
         IMapValue regex = computeInputParameter(1, context);
         IMapValue replacement = computeInputParameter(2, context);
-        if(value.isNotNull() && regex.isNotNull() && replacement.isNotNull())
-        {
-            return new MapValue(this, value.getValue(String.class).replaceAll(regex.getValue(String.class), replacement.getValue(String.class)));
-        }
+        if(value.isNotNull() && regex.isNotNull())
+            return new MapValue(this, value.getValue(String.class).replaceAll(regex.getValue(String.class),  replacement.isNotNull() ? replacement.getValue(String.class) : ""));
 
         return MapValue.NULL;
     }

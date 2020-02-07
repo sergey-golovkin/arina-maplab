@@ -9,6 +9,8 @@
 			<sources>
 				<datapoint name="value" type="xs:dateTime"/>
 				<datapoint name="format" type="xs:string"/>
+				<datapoint name="timezone" type="xs:string" connectiontype="0"/>
+				<datapoint name="lenient" type="xs:boolean" connectiontype="0"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:string"/>
@@ -18,7 +20,7 @@
 				</implementation>
 			</implementations>
 			<description>
-				<short>result = format(value, format)</short>
+				<short>result = format(value, format, timezone, lenient)</short>
 				<long>Function is used to convert a dateTime into a string.</long>
 			</description>
 		</component>
@@ -26,6 +28,8 @@
 			<sources>
 				<datapoint name="value" type="xs:string"/>
 				<datapoint name="format" type="xs:string"/>
+				<datapoint name="timezone" type="xs:string" connectiontype="0"/>
+				<datapoint name="lenient" type="xs:boolean" connectiontype="0"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:dateTime"/>
@@ -35,7 +39,7 @@
 				</implementation>
 			</implementations>
 			<description>
-				<short>result = parse( value, format )</short>
+				<short>result = parse(value, format, timezone, lenient)</short>
 				<long>Function is used to convert a string into a datetime, according to the format.</long>
 			</description>
 		</component>

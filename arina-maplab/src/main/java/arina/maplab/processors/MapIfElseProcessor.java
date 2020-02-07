@@ -12,7 +12,7 @@ public class MapIfElseProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         for (int i = 0; i < definition.getInputList().size() - 1; i += 2)
         {

@@ -17,7 +17,7 @@ public class MapFilterProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         if(index != null)
         {

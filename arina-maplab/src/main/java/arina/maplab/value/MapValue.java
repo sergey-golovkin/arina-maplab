@@ -76,13 +76,13 @@ public class MapValue implements IMapValue
     @Override
     public boolean isNotNull()
     {
-        return value != null;
+        return ! isNull();
     }
 
     @Override
     public boolean isNull()
     {
-        return value == null;
+        return value == null || (value instanceof String && ((String) value).length() == 0);
     }
 
     @Override

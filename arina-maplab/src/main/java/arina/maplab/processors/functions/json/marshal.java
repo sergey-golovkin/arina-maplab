@@ -15,7 +15,7 @@ public class marshal extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue object = computeInputParameter(0, context);
         IMapValue dateFormat = computeInputParameter(1, context);

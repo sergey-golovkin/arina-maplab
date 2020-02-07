@@ -6,9 +6,12 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-public class current_timemillis extends MapLibraryFunctionProcessor
+import java.util.ArrayList;
+import java.util.List;
+
+public class as_array extends MapLibraryFunctionProcessor
 {
-    public current_timemillis(IMapComponentDefinition definition, Integer growable)
+    public as_array(IMapComponentDefinition definition, Integer growable)
     {
         super(definition, growable);
     }
@@ -16,6 +19,11 @@ public class current_timemillis extends MapLibraryFunctionProcessor
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        return new MapValue(this, System.currentTimeMillis());
+        List<Object> values = new ArrayList<>();
+
+        for(String item : this.definition.getInputList())
+            values.add(computeInputValue(item, context).getValue());
+
+        return new MapValue(this, values);
     }
 }

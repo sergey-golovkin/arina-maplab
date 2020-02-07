@@ -30,6 +30,13 @@ import javax.xml.bind.annotation.XmlType;
  *                     &lt;complexType>
  *                       &lt;complexContent>
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                           &lt;attribute name="type">
+ *                             &lt;simpleType>
+ *                               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}int">
+ *                                 &lt;enumeration value="2"/>
+ *                               &lt;/restriction>
+ *                             &lt;/simpleType>
+ *                           &lt;/attribute>
  *                           &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *                         &lt;/restriction>
  *                       &lt;/complexContent>
@@ -104,6 +111,13 @@ public class Connections {
      *           &lt;complexType>
      *             &lt;complexContent>
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *                 &lt;attribute name="type">
+     *                   &lt;simpleType>
+     *                     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}int">
+     *                       &lt;enumeration value="2"/>
+     *                     &lt;/restriction>
+     *                   &lt;/simpleType>
+     *                 &lt;/attribute>
      *                 &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
      *               &lt;/restriction>
      *             &lt;/complexContent>
@@ -213,6 +227,13 @@ public class Connections {
          * &lt;complexType>
          *   &lt;complexContent>
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+         *       &lt;attribute name="type">
+         *         &lt;simpleType>
+         *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}int">
+         *             &lt;enumeration value="2"/>
+         *           &lt;/restriction>
+         *         &lt;/simpleType>
+         *       &lt;/attribute>
          *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
          *     &lt;/restriction>
          *   &lt;/complexContent>
@@ -225,8 +246,34 @@ public class Connections {
         @XmlType(name = "")
         public static class Data {
 
+            @XmlAttribute(name = "type")
+            protected Integer type;
             @XmlAttribute(name = "name")
             protected String name;
+
+            /**
+             * Gets the value of the type property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link Integer }
+             *     
+             */
+            public Integer getType() {
+                return type;
+            }
+
+            /**
+             * Sets the value of the type property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link Integer }
+             *     
+             */
+            public void setType(Integer value) {
+                this.type = value;
+            }
 
             /**
              * Gets the value of the name property.

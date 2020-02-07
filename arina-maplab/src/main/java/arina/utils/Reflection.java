@@ -1,14 +1,10 @@
 package arina.utils;
 
-import arina.maplab.definitions.mapforce.definitions.MfdVariableDefinition;
 import org.apache.commons.io.FilenameUtils;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -57,81 +53,127 @@ public class Reflection
 	        name = name.substring(0, index) + name.substring(index + 1, index + 2).toUpperCase() + name.substring(index + 2);
         }
 
+		for(int index = name.indexOf("_"); index >= 0; index = name.indexOf("_"))
+		{
+			name = name.substring(0, index) + name.substring(index + 1, index + 2).toUpperCase() + name.substring(index + 2);
+		}
+
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     public static Object map2Object(Map<String, Object> object, Class clazz) throws Exception
     {
-        Object root = clazz.newInstance();
+		String name = null;
+		Object root = clazz.newInstance();
 
-        for (Map.Entry<String, Object> e : object.entrySet())
-        {
-            String name = e.getKey();
-            Method method = null;
-            Class fieldClass = null;
+		try
+		{
+			for (Map.Entry<String, Object> e : object.entrySet())
+			{
+				name = e.getKey();
+				Method method = null;
+				Class fieldClass = null;
 
-	        try
-            {
-	            method = root.getClass().getMethod("get" + Reflection.normalizeName(name));
-            }
-            catch (NoSuchMethodException ex)
-            {
-                try
-                {
-                    method = root.getClass().getMethod("is" + Reflection.normalizeName(name));
-                }
-                catch (NoSuchMethodException ex2)
-                {
-                    for(Field field : root.getClass().getDeclaredFields())
-                    {
-                        XmlElements annotation = field.getDeclaredAnnotation(XmlElements.class);
-                        if (annotation != null)
-                        {
-                            for(XmlElement element :annotation.value())
-                            {
-                                if(element.name().equals(name))
-                                {
-                                    name = field.getName();
-                                    method = root.getClass().getMethod("get" + Reflection.normalizeName(name));
-                                    fieldClass = element.type();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+				try
+				{
+					method = clazz.getMethod("get" + Reflection.normalizeName(name));
+				}
+				catch (NoSuchMethodException ex)
+				{
+					try
+					{
+						method = clazz.getMethod("is" + Reflection.normalizeName(name));
+					}
+					catch (NoSuchMethodException ex2)
+					{
+						for (Field field : clazz.getDeclaredFields())
+						{
+							XmlElements annotation = field.getDeclaredAnnotation(XmlElements.class);
+							if (annotation != null)
+							{
+								for (XmlElement element : annotation.value())
+								{
+									if (element.name().equals(name))
+									{
+										name = field.getName();
+										method = clazz.getMethod("get" + Reflection.normalizeName(name));
+										fieldClass = element.type();
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
 
-            if(method == null)
-            	throw new NoSuchMethodException("Method get/is" + Reflection.normalizeName(name) + " for class " + root.getClass().getTypeName() + " not found.");
-	        
-            if(fieldClass == null)
-                fieldClass = Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName()));
+				if (method == null)
+					throw new NoSuchMethodException("Method get/is" + Reflection.normalizeName(name) + " for class " + clazz.getTypeName() + " not found.");
 
-            if(e.getValue() instanceof Map)
-            {
-                setValue(root, name, map2Object((Map<String, Object>) e.getValue(), fieldClass));
-            }
-            else if(e.getValue() instanceof List)
-            {
-                ArrayList<Object> arrayList = (ArrayList<Object>) method.invoke(root);
-                for(Object item : (List) e.getValue())
-                {
-                    arrayList.add(map2Object((Map<String, Object>) item, fieldClass));
-                }
-            }
-            else
-            {
-                if(TypesUtils.isSimpleType(fieldClass))
-                    setValue(root, name, e.getValue());
-                else
-                {
-                    Object o = fieldClass.newInstance();
-                    setValue(root, name, o);
-                    setValue(o, e.getKey(), e.getValue());
-                }
-            }
-        }
+				if (fieldClass == null)
+					fieldClass = Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName()));
+
+				if (e.getValue() instanceof Map)
+				{
+					setValue(root, name, map2Object((Map<String, Object>) e.getValue(), fieldClass));
+				}
+				else if (e.getValue() instanceof List)
+				{
+					if (TypesUtils.isSimpleType(fieldClass))
+					{
+						for (Object item : (List) e.getValue())
+						{
+							setValue(root, name, item);
+						}
+					}
+					else
+					{
+						ArrayList<Object> arrayList = (ArrayList<Object>) method.invoke(root);
+						if (arrayList != null)
+						{
+							for (Object item : (List) e.getValue())
+							{
+								arrayList.add(map2Object((Map<String, Object>) item, fieldClass));
+							}
+						}
+						else if (((List) e.getValue()).size() > 0)
+						{
+							Object o = fieldClass.newInstance();
+							setValue(root, name, o);
+							for (Object item : (List) e.getValue())
+							{
+								for (Map.Entry<String, Object> e2 : ((Map<String, Object>)item).entrySet())
+								{
+									setValue(o, e2.getKey(), map2Object((Map<String, Object>) e2.getValue(),
+											Reflection.forName(Reflection.normalizeType(fieldClass.getMethod("get" + Reflection.normalizeName(e2.getKey())).getGenericReturnType().getTypeName()))));
+								}
+							}
+						}
+//						else if (((List) e.getValue()).size() > 0) // если присваивают массив в не массив, такое тоже бывает.
+//						{
+//							setValue(root, name, map2Object((Map<String, Object>) ((List) e.getValue()).get(0), fieldClass));
+//						}
+					}
+				}
+				else
+				{
+					if (TypesUtils.isSimpleType(fieldClass))
+						setValue(root, name, e.getValue());
+					else
+					{
+						Object o = fieldClass.newInstance();
+						setValue(root, name, o);
+						setValue(o, e.getKey(), e.getValue());
+					}
+				}
+			}
+		}
+        catch (Exception e)
+		{
+			if(name != null)
+				throw new IllegalArgumentException("The field \"" + name + "\" has invalid type.");
+			else
+				throw e;
+		}
         return root;
     }
 

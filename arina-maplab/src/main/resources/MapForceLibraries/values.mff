@@ -5,7 +5,7 @@
 		<implementation language="builtin"/>
 	</implementations>
 	<group name="wellknown values">
-		<component name="null-value">
+		<component name="NULL-value">
 			<sources>
 			</sources>
 			<targets>
@@ -63,6 +63,53 @@
 			<description>
 				<short>result = current-timemillis</short>
 				<long>Returns the current datetime value in milliseconds since epoch Jan 1 , 1970 00:00:00</long>
+			</description>
+		</component>
+		<component name="CRLF-value">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = CRLF-value</short>
+				<long>Returns the CRLF (\n) value.</long>
+			</description>
+		</component>
+		<component name="TAB-value">
+			<sources>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = TAB-value</short>
+				<long>Returns the TAB (\t) value.</long>
+			</description>
+		</component>
+		<component name="as-array" growable="true" growablebasename="value">
+			<sources>
+				<datapoint name="value1" type="xs:untypedAtomic"/>
+				<datapoint name="value2" type="xs:untypedAtomic"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="ZeroOrMore mf:no-sequence"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = as-array(value1, [value2,...,valueN])</short>
+				<long>Creates an array of the values.</long>
 			</description>
 		</component>
 	</group>	

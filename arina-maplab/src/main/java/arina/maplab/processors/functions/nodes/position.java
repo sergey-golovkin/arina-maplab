@@ -7,7 +7,6 @@ import arina.maplab.processors.contexts.ParentValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
-
 import java.util.List;
 
 public class position extends MapLibraryFunctionProcessor
@@ -18,7 +17,7 @@ public class position extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IValueContext valueContext = context.getContext(IValueContext.class);
         if(valueContext != null)

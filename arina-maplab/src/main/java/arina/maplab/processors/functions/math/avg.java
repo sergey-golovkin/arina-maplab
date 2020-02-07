@@ -17,7 +17,7 @@ public class avg extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         BigDecimal result = new BigDecimal(0);
         int n = 0;

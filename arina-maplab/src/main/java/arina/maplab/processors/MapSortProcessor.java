@@ -6,8 +6,6 @@ import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import org.apache.commons.lang.builder.CompareToBuilder;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
 public class MapSortProcessor extends MapComponentProcessor
@@ -37,7 +35,7 @@ public class MapSortProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue value = MapValue.NULL;
 

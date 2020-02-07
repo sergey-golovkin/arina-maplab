@@ -1,4 +1,4 @@
-package arina.maplab.processors.functions.logical;
+package arina.maplab.processors.functions.values;
 
 import arina.maplab.definitions.IMapComponentDefinition;
 import arina.maplab.processors.contexts.IMapContext;
@@ -6,9 +6,9 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-public class is_not_null extends MapLibraryFunctionProcessor
+public class tab_value extends MapLibraryFunctionProcessor
 {
-    public is_not_null(IMapComponentDefinition definition, Integer growable)
+    public tab_value(IMapComponentDefinition definition, Integer growable)
     {
         super(definition, growable);
     }
@@ -16,11 +16,6 @@ public class is_not_null extends MapLibraryFunctionProcessor
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        IMapValue op1 = computeInputParameter(0, context);
-
-        if(op1.isNotNull())
-            return MapValue.TRUE;
-        else
-            return MapValue.FALSE;
+        return new MapValue(this, "\t");
     }
 }

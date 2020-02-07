@@ -6,8 +6,6 @@ import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
-import org.apache.commons.lang.builder.CompareToBuilder;
-
 import java.util.List;
 
 public class concat extends MapLibraryFunctionProcessor
@@ -18,7 +16,7 @@ public class concat extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         if(index != null)
         {
@@ -38,9 +36,12 @@ public class concat extends MapLibraryFunctionProcessor
                 {
                     result = processValue(result, new ValueContext(context, value.create(value.getValue())));
                 }
-                IMapValue prefix = computeInputParameter(2, context);
-                IMapValue suffix = computeInputParameter(4, context);
-                return new MapValue(this, (prefix.isNotNull() ? prefix.getValue(String.class) : "") + result + (suffix.isNotNull() ? suffix.getValue(String.class) : ""));
+                if(result != null)
+                {
+                    IMapValue prefix = computeInputParameter(2, context);
+                    IMapValue suffix = computeInputParameter(4, context);
+                    return new MapValue(this, (prefix.isNotNull() ? prefix.getValue(String.class) : "") + result + (suffix.isNotNull() ? suffix.getValue(String.class) : ""));
+                }
             }
         }
         return MapValue.NULL;

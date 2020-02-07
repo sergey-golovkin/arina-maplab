@@ -16,7 +16,7 @@ public class baseConverter extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue value = computeInputParameter(0, context);
         return value.create(TypesUtils.getValue(datatype, value.getValue()));

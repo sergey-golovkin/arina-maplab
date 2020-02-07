@@ -68,14 +68,16 @@ public class MfdXMLDefinition extends MfdVariableDefinition
                         ns = part;
                 }
             }
-            for(String v : Arrays.asList(ns.replaceAll("http://|https://", "").replaceAll("\\{(.*)\\}.*", "$1").split("/")))
+
+            for(String v : Arrays.asList(ns.replaceAll("http://www\\.|https://www\\.|http://|https://", "").replaceAll("\\{(.*)\\}.*", "$1").split("/")))
             {
                 List<String> t = Arrays.asList(v.split("\\."));
                 Collections.reverse(t);
                 for(String s : t)
-                    namespace += (namespace.length() > 0 ? "." : "") + s;
+                    namespace += (namespace.length() > 0 ? "." : "") + s.toLowerCase();
             }
         }
+
 
         super.load(globalPrefix, component, connectorsMap);
     }
@@ -107,7 +109,11 @@ public class MfdXMLDefinition extends MfdVariableDefinition
         }
         else
         {
-            Class objectClass = fields.get(FilenameUtils.getFullPathNoEndSeparator(path)).clazz;
+            FieldDef fd = fields.get(FilenameUtils.getFullPathNoEndSeparator(path));
+            if(fd == null)
+                throw new IllegalArgumentException("Invalid xsd schema. Definition of " + FilenameUtils.getFullPathNoEndSeparator(path) + " not found.");
+
+            Class objectClass = fd.clazz;
             String n = Reflection.normalizeName(FilenameUtils.getName(path));
             Method m = null;
             Class fieldClass;

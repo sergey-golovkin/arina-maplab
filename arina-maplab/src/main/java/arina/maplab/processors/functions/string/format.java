@@ -16,7 +16,7 @@ public class format extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue format = computeInputParameter(0, context);
         Object[] params = new Object[this.definition.getInputList().size() - 1];

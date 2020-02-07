@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class format extends MapLibraryFunctionProcessor
 {
@@ -20,15 +21,23 @@ public class format extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue value = computeInputParameter(0, context);
         IMapValue format = computeInputParameter(1, context);
+        IMapValue timezone = computeInputParameter(2, context);
+        IMapValue lenient = computeInputParameter(3, context);
 
         if(value.isNotNull() && format.isNotNull())
         {
             XMLGregorianCalendar xmlgc = value.getValue(XMLGregorianCalendar.class);
             DateFormat df = new SimpleDateFormat(format.getValue(String.class));
+            if(timezone.isNotNull())
+                df.setTimeZone(TimeZone.getTimeZone(timezone.getValue(String.class)));
+
+            if(lenient.isNotNull())
+                df.setLenient(lenient.getValue(Boolean.class));
+
             if(df != null && xmlgc != null)
             {
                 GregorianCalendar gc = xmlgc.toGregorianCalendar();

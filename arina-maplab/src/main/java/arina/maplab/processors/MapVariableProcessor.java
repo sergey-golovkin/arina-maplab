@@ -6,8 +6,6 @@ import arina.maplab.processors.contexts.*;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import arina.utils.*;
-
-import java.io.IOException;
 import java.util.*;
 
 public abstract class MapVariableProcessor extends MapComponentProcessor
@@ -18,7 +16,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
     final private String usageKind;
     final private String componentInput;
     final private String componentOutput;
-    final Integer two = new Integer(2);
+    final private Integer copyAll = new Integer(2);
     protected Object root = null;
     protected boolean isLoaded = false;
     protected long scn = 0;
@@ -48,35 +46,31 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        if("input".equals(usageKind) && definition.getLink(index) == null)
-            return context.getContext(InputValueContext.class).getValue(connectors.get(index).path);
+        if ("input".equals(usageKind) && definition.getLink(index) == null) return context.getContext(InputValueContext.class).getValue(connectors.get(index).path);
 
         computeSelf(context);
 
-        if(index != null)
+        if (index != null)
         {
             String path = connectors.get(index).path;
             Object object = root;
             IValueContext valueContext = context.getContext(IValueContext.class);
 
-            if(valueContext != null && valueContext.getValue().getProcessor() == this) // нам прислали контекст, проверим - наш ли ?
+            if (valueContext != null && valueContext.getValue().getProcessor() == this) // нам прислали контекст, проверим - наш ли ?
             {
                 Object contextObject = valueContext.getValue().getValue();
                 String contextPath = valueContext.getValue().getContext();
-                if (path.startsWith(contextPath) && ! contextPath.equals("/"))
+                if (path.startsWith(contextPath) && !contextPath.equals("/"))
                 {
-                    if(path.equals(contextPath))
+                    if (path.equals(contextPath))
                     {
-                        if(context.getContext(IParentValueContext.class) != null)
-                            return processNodeRules(index, new MapValue(this, findParent(contextObject, root, path.substring(1).split("/"), 0), path, scn), context);
+                        if (context.getContext(IParentValueContext.class) != null) return processNodeRules(index, new MapValue(this, findParent(contextObject, root, path.substring(1).split("/"), 0), path, scn), context);
                         else
                         {
-                            if (fields.get(path).ifValueClazz != null)
-                                return processNodeRules(index, new MapValue(this, ((Map) contextObject).get("value"), path, scn), context);
-                            else
-                                return processNodeRules(index, new MapValue(this, contextObject, path, scn), context);
+                            if (fields.get(path).ifValueClazz != null) return processNodeRules(index, new MapValue(this, ((Map) contextObject).get("value"), path, scn), context);
+                            else return processNodeRules(index, new MapValue(this, contextObject, path, scn), context);
                         }
                     }
                     else
@@ -89,17 +83,14 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 
             if ("/".equals(path))
             {
-                if(index.equals(componentOutput) && "stringserialize".equals(usageKind))
-                    return processNodeRules(index, marshal(object), context);
-                else
-                    return processNodeRules(index, new MapValue(this, root, "/", scn), context);
+                if (index.equals(componentOutput) && "stringserialize".equals(usageKind)) return processNodeRules(index, marshal(object), context);
+                else return processNodeRules(index, new MapValue(this, root, "/", scn), context);
             }
             else
             {
                 return processNodeRules(index, new MapValue(this, getValue(object, path.substring(1).split("/"), 0), connectors.get(index).path, scn), context);
             }
         }
-
         return MapValue.NULL;
     }
 
@@ -122,6 +113,9 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 
     private Object getValue(Object object, String[] path, int pathIndex)
     {
+        if(object == null)
+            return null;
+
         if(object instanceof List) // обработка массива
         {
             ArrayList<Object> array = new ArrayList<>();
@@ -129,7 +123,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             {
                 array.add(getValue(item, path, pathIndex)); // обработаем по одному
             }
-            return array;
+            return (array.size() == 0 ? null : array);
         }
         else if(object instanceof Map) // обработка объекта или тега с атрибутами
         {
@@ -137,7 +131,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 
             if (value != null && pathIndex < path.length - 1) // это еще не конечный элемент, идем дальше
             {
-                if(value instanceof Map) // если это объект образабываем его
+                if(value instanceof Map) // если это объект обрабатываем его
                     return getValue(value, path, pathIndex + 1);
                 if(value instanceof List) // а если список, то берем первый (нулевой по индексу) объект и обработаем его
                     return getValue(((List)value).get(0), path, pathIndex + 1);
@@ -186,7 +180,9 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
     @Override
     protected IMapValue computeInputValue(String input, IMapContext context) throws Exception
     {
-        return processNodeRules(input, super.computeInputValue(input, context), context);
+        IMapValue value = processNodeRules(input, super.computeInputValue(input, context), context);
+        stackTraceValues.put(input, value);
+        return value;
     }
 
     private void computeSelf(IMapContext context) throws Exception
@@ -255,6 +251,11 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 
             if(segIndex == segCount - 1) // конечное значение
             {
+                if(field == null)
+                {
+                    throw new IllegalArgumentException("Definition of \"" + currentPath + "\" not found.");
+                }
+
                 if(field.isObject) // конечное значение является объектом
                 {
                     if(field.isArray) // массив объектов
@@ -271,11 +272,11 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
                 {
                     if(field.isArray) // массив простых значений
                     {
-                        throw new IllegalArgumentException();
+                        processValueArray(object, valueItem, name, field);
                     }
                     else // одиночное простое конечное значение
                     {
-                        object.put(name, TypesUtils.getValue(field.clazz, valueItem instanceof List ? ((List) valueItem).get(0) : valueItem));
+                        processSingleValue(object, valueItem, name, field);
                     }
                 }
             }
@@ -287,11 +288,49 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
     }
 
+    private void processSingleValue(Map object, Object valueItem, String name, FieldDef field) throws Exception
+    {
+        if(valueItem instanceof List)
+        {
+            if(((List) valueItem).size() > 0 && ((List) valueItem).get(0) != null)
+                object.put(name, TypesUtils.getValue(field.clazz, ((List) valueItem).get(0)));
+        }
+        else
+        {
+            if(valueItem != null)
+                object.put(name, TypesUtils.getValue(field.clazz, valueItem));
+        }
+    }
+
+    private void processValueArray(Map object, Object valueItem, String name, FieldDef field) throws Exception
+    {
+        ArrayList<Object> array = (ArrayList<Object>) object.get(name);
+        if(array == null)
+            array = new ArrayList<>();
+
+        if(valueItem instanceof List)
+        {
+            for(Object item : (List)valueItem)
+                if(item != null)
+                    array.add(TypesUtils.getValue(field.clazz, item));
+        }
+        else
+        {
+            if(valueItem != null)
+                array.add(TypesUtils.getValue(field.clazz, valueItem));
+        }
+
+        if(array.size() > 0)
+            object.put(name, array);
+    }
+
+
     private Map processSingleObject(Map object, List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, Object valueItem, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, String name, FieldDef field) throws Exception
     {
-        if(two.equals(definition.getLink(inputIndex).getValue())) // copyAll
+        if(copyAll.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
-            object.put(name, Reflection.clone(valueItem));
+            if(valueItem != null)
+                object.put(name, Reflection.clone(valueItem));
             return object;
         }
         else // just create object template
@@ -368,7 +407,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
 
     private Object computeArrayItem(List<String> inputIndexes, Map<String, Map.Entry<String, String>> inputPaths, IMapContext context, String currentPath, String inputIndex, IMapValue value, MfdVariableDefinition.ConnectorDef connectorDef, int segIndex, FieldDef field, Object valueItem) throws Exception
     {
-        if (two.equals(definition.getLink(inputIndex).getValue())) // copyAll
+        if (copyAll.equals(definition.getLink(inputIndex).getValue())) // copyAll
         {
             Object object = Reflection.clone(valueItem);
             instances.put(object, connectorDef.pathsInstanceId.substring(1).split("/")[segIndex]);
@@ -395,7 +434,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
         }
         else // если есть соединение на уровне корня данных
         {
-            if(two.equals(definition.getLink(inputIndex).getValue())) // если тап связи CopyAll
+            if(copyAll.equals(definition.getLink(inputIndex).getValue())) // если тип связи CopyAll
                 root = Reflection.clone(value.getValue());
             else
             {
@@ -435,7 +474,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             Map.Entry<String, String> entry  = inputPaths.get(index);
             String path = entry.getValue();
             String prefix = entry.getKey();
-            if ((prefix + path).startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
+            if ((prefix + path).startsWith(currentPath + "/") && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
             {
                 inputNewIndexes.add(index);
                 inputNewPaths.put(index, new AbstractMap.SimpleEntry<>(currentPath, (prefix + path).replaceFirst(currentPath, "")));
@@ -455,7 +494,7 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             Map.Entry<String, String> entry  = inputPaths.get(index);
             String path = entry.getValue();
             String prefix = entry.getKey();
-            if ((prefix + path).startsWith(currentPath) && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
+            if ((prefix + path).startsWith(currentPath + "/") && connectors.get(index).pathsInstanceId.startsWith(currentInstanceId))
             {
                 inputIndexesRemover.add(index);
             }
@@ -466,5 +505,16 @@ public abstract class MapVariableProcessor extends MapComponentProcessor
             inputIndexes.remove(index);
             inputPaths.remove(index);
         });
+    }
+
+    @Override
+    public String getName(String index) throws Exception
+    {
+        MfdVariableDefinition.ConnectorDef cd = connectors.get(index);
+
+        if(cd != null)
+            return "field: " + cd.path;
+        else
+            return "unknown field";
     }
 }

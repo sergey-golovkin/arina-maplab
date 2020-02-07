@@ -14,7 +14,7 @@ public class concat extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         StringBuilder sb = new StringBuilder();
         for(String item : this.definition.getInputList())
@@ -25,6 +25,11 @@ public class concat extends MapLibraryFunctionProcessor
                 sb.append(value.getValue(String.class));
             }
         }
-        return new MapValue(this, sb.toString());
+
+        String str = sb.toString();
+        if(str == null || str.length() == 0)
+            return MapValue.NULL;
+        else
+            return new MapValue(this, str);
     }
 }

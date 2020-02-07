@@ -15,7 +15,7 @@ public class at_position extends MapLibraryFunctionProcessor
     }
 
     @Override
-    public IMapValue getValue(String index, IMapContext context) throws Exception
+    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
         IMapValue values = computeInputParameter(0, context);
         IMapValue position = computeInputParameter(1, context);
