@@ -5,25 +5,6 @@
 		<implementation language="builtin"/>
 	</implementations>
 	<group name="string functions">
-		<component name="dict_transform">
-			<sources>
-				<datapoint name="dict_code" type="xs:string"/>
-				<datapoint name="map_field_ids" type="xs:string"/>
-				<datapoint name="map_field_values" type="xs:string"/>
-				<datapoint name="remap_field_id" type="xs:string"/>
-			</sources>
-			<targets>
-				<datapoint name="result" type="xs:string"/>
-			</targets>
-			<implementations>
-				<implementation language="builtin">
-				</implementation>
-			</implementations>
-			<description>
-				<short>result = concat(value1, value2, ... )</short>
-				<long>Returns the concatenation of value1 and value2, etc.</long>
-			</description>
-		</component>
 		<component name="concat" growable="true" growablebasename="value">
 			<sources>
 				<datapoint name="value1" type="xs:string"/>
