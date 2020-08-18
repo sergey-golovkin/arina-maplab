@@ -8,9 +8,9 @@
 	<group name="scc functions">		
 		<component name="get-field-value">
 			<sources>
-				<datapoint name="id_ref" type="xs:string"/>
-				<datapoint name="id_search_field" type="xs:string"/>
-				<datapoint name="fields" type="ZeroOrMore mf:no-sequence"/>
+				<datapoint name="dictionary_id" type="xs:string"/>
+				<datapoint name="search_field_id" type="xs:string"/>
+				<datapoint name="criteria" type="ZeroOrMore mf:no-sequence"/>
 			</sources>
 			<targets>
 				<datapoint name="result" type="xs:string"/>

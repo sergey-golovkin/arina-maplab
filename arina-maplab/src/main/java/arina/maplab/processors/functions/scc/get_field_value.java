@@ -6,6 +6,7 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,6 +17,9 @@ import java.nio.charset.StandardCharsets;
 
 public class get_field_value extends MapLibraryFunctionProcessor {
 
+    @Value("${server.port}")
+    private String serverPort;
+
     public get_field_value(IMapComponentDefinition definition, Integer growable) {
         super(definition, growable);
     }
@@ -23,29 +27,30 @@ public class get_field_value extends MapLibraryFunctionProcessor {
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception {
         // Код справочника, по которому осуществляется поиск
-        IMapValue dict_code = computeInputParameter(0, context);
+        IMapValue dictionary_id = computeInputParameter(0, context);
         // Наименование колонки, значение из которой требуется найти
-        IMapValue map_field = computeInputParameter(1, context);
-        // Строковое представление ключ-значение, по которым осуществляется поиск
-        IMapValue remap_field_id = computeInputParameter(2, context);
+        IMapValue search_field_id = computeInputParameter(1, context);
+        // Строковое представление ключ-значение в формате json, по которым осуществляется поиск
+        IMapValue criteria = computeInputParameter(2, context);
 
-        if (dict_code.isNull())
+        if (dictionary_id.isNull())
             return MapValue.NULL;
-        String spath = "http://localhost:8080/transform/";
+        if (serverPort == null) {
+            serverPort = "8080";
+        }
+        String spath = "http://localhost:" + serverPort + "/transform/";
         StringBuilder sb = new StringBuilder();
         URL url = new URL(spath);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Content-Type", "text/html");
-        conn.setRequestProperty("Charset", "utf-8");
-        conn.setRequestProperty("DictionaryCode", dict_code.getValue(String.class));
-        conn.setRequestProperty("MapField", map_field.getValue(String.class));
+        conn.setRequestProperty("DictionaryCode", dictionary_id.getValue(String.class));
+        conn.setRequestProperty("MapField", search_field_id.getValue(String.class));
         conn.setDoOutput(true);
-        String value = remap_field_id.getValue(String.class);
+        String value = criteria.getValue(String.class);
         JSONObject object = new JSONObject(value);
-        OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+        OutputStreamWriter wr= new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
         wr.write(object.toString());
         wr.flush();
         wr.close();
