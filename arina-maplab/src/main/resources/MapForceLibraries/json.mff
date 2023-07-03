@@ -40,22 +40,5 @@
 				<long>Returns JSON string from object.</long>
 			</description>
 		</component>
-        <component name="get-value-by-key">
-            <sources>
-                <datapoint name="object" type="xs:string"/>
-				<datapoint name="key" type="xs:string"/>
-			</sources>
-			<targets>
-				<datapoint name="result" type="xs:string"/>
-			</targets>
-			<implementations>
-				<implementation language="builtin">
-				</implementation>
-			</implementations>
-			<description>
-				<short>result = object["key"]</short>
-				<long>Returns the value object associated with a key.</long>
-			</description>
-		</component>
 	</group>	
 </mapping>
