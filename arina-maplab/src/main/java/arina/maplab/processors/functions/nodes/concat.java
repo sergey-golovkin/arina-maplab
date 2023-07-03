@@ -6,7 +6,10 @@ import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
-import java.util.List;
+import arina.utils.TypesUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class concat extends MapLibraryFunctionProcessor
 {
@@ -20,22 +23,35 @@ public class concat extends MapLibraryFunctionProcessor
     {
         if(index != null)
         {
-            IMapValue value = computeInputParameter(0, context);
-            String result = null;
+            IMapValue nodesValue = computeInputParameter(0, context);
 
-            if (value.isNotNull())
+            if (nodesValue.isNotNull())
             {
-                if (value.getValue() instanceof List)
+                String result = null;
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+
+                for (Object item : nodes)
                 {
-                    for (Object item : ((List) value.getValue()))
+                    IMapContext c = new ValueContext(context, nodesValue.create(item));
+                    IMapValue stringValue = computeInputParameter(1, c);
+                    if(stringValue.isNotNull())
                     {
-                        result = processValue(result, new ValueContext(context, value.create(item)));
+                        IMapValue delimiter = computeInputParameter(3, c);
+                        ArrayList<Object> strings = new ArrayList<>();
+                        addValue(strings, stringValue.getValue(), true);
+
+                        for (Object part : strings)
+                        {
+                            if (part != null)
+                                if(result == null)
+                                    result = TypesUtils.getValue(String.class, part);
+                                else
+                                    result += (delimiter.isNotNull() ? delimiter.getValue(String.class) : "") + TypesUtils.getValue(String.class, part);
+                        }
                     }
                 }
-                else
-                {
-                    result = processValue(result, new ValueContext(context, value.create(value.getValue())));
-                }
+
                 if(result != null)
                 {
                     IMapValue prefix = computeInputParameter(2, context);
@@ -45,21 +61,5 @@ public class concat extends MapLibraryFunctionProcessor
             }
         }
         return MapValue.NULL;
-    }
-
-    private String processValue(String result, IMapContext context) throws Exception
-    {
-        IMapValue string = computeInputParameter(1, context);
-
-        if(string.isNotNull())
-        {
-            IMapValue delimiter = computeInputParameter(3, context);
-            if(result == null)
-                return string.getValue(String.class);
-            else
-                return result + delimiter.getValue(String.class) + string.getValue(String.class);
-        }
-        else
-            return result;
     }
 }

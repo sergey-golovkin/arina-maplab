@@ -18,9 +18,8 @@ import java.util.*;
 
 public class MfdXMLDefinition extends MfdVariableDefinition
 {
-    String namespace = "";
     String xmlRoot = "";
-    String rootClass = "";
+    Class rootClass;
 
     // todo  use-generic-elements and show-schema-children
 
@@ -29,52 +28,23 @@ public class MfdXMLDefinition extends MfdVariableDefinition
     {
         if(component.getData() != null)
         {
-            String ns = "";
-
             if(component.getData().getParameter() != null && component.getData().getParameter().getRoot() != null)
             {
                 for(Entry e : component.getData().getParameter().getRoot().getEntry())
                 {
                     xmlRoot = e.getName();
-                    rootClass += (rootClass.length() > 0 ? "$" : "") + Reflection.normalizeName(e.getName());
-                    if(ns.length() == 0)
-                        ns = e.getNs();
+                    if(rootClass == null)
+                        rootClass = Reflection.getClass(e.getNs(), e.getName());
+                    else
+                        rootClass = Reflection.getClass(rootClass, e.getName());
                 }
             }
 
             if(component.getData().getDocument() != null && StringUtils.isEmpty(xmlRoot))
             {
-                xmlRoot = component.getData().getDocument().getInstanceroot().replaceAll("\\{.*\\}(.*)", "$1");
-                String el = "";
-                ArrayList<String> parts = new ArrayList();
-                for(String part : component.getData().getDocument().getInstanceroot().split("/"))
-                {
-                    if(part.startsWith("{"))
-                        el += part;
-                    else
-                        el += "/" + part;
-
-                    if(part.contains("}"))
-                    {
-                        parts.add(el);
-                        el = "";
-                    }
-                }
-                for(String part : parts)
-                {
-                    rootClass += (rootClass.length() > 0 ? "$" : "") + Reflection.normalizeName(part.replaceAll("\\{.*\\}(.*)", "$1"));
-
-                    if(ns.length() == 0)
-                        ns = part;
-                }
-            }
-
-            for(String v : Arrays.asList(ns.replaceAll("http://www\\.|https://www\\.|http://|https://", "").replaceAll("\\{(.*)\\}.*", "$1").split("/")))
-            {
-                List<String> t = Arrays.asList(v.split("\\."));
-                Collections.reverse(t);
-                for(String s : t)
-                    namespace += (namespace.length() > 0 ? "." : "") + s.toLowerCase();
+                xmlRoot = Reflection.extractClass(component.getData().getDocument().getInstanceroot());
+                if(rootClass == null)
+                    rootClass = Reflection.getClass(component.getData().getDocument().getInstanceroot(), xmlRoot);
             }
         }
 
@@ -105,7 +75,7 @@ public class MfdXMLDefinition extends MfdVariableDefinition
     {
         if("/".equals(path))
         {
-            fields.put(path, new FieldDef(Reflection.forName((StringUtils.isEmpty(namespace) ? "" : namespace + ".") + Reflection.normalizeName(rootClass)), false, false));
+            fields.put(path, new FieldDef(rootClass, false, false));
         }
         else
         {

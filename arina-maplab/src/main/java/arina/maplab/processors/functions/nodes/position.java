@@ -7,6 +7,8 @@ import arina.maplab.processors.contexts.ParentValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class position extends MapLibraryFunctionProcessor
@@ -22,12 +24,15 @@ public class position extends MapLibraryFunctionProcessor
         IValueContext valueContext = context.getContext(IValueContext.class);
         if(valueContext != null)
         {
-            IMapValue value = computeInputParameter(0, new ParentValueContext(context, valueContext.getValue()));
+            IMapValue nodesValue = computeInputParameter(0, context.getParent());
 
-            if (valueContext != null && value.getValue() instanceof List)
+            if (nodesValue.isNotNull())
             {
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+
                 int i = 0;
-                for (Object item : ((List) value.getValue()))
+                for(Object item : nodes)
                 {
                     if (valueContext.getValue().getValue() == item)
                     {
@@ -39,4 +44,29 @@ public class position extends MapLibraryFunctionProcessor
         }
         return MapValue.NULL;
     }
+//    protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
+//    {
+//        IValueContext valueContext = context.getContext(IValueContext.class);
+//        if(valueContext != null)
+//        {
+//            IMapValue nodesValue = computeInputParameter(0, new ParentValueContext(context, valueContext.getValue()));
+//
+//            if (nodesValue.isNotNull())
+//            {
+//                ArrayList<Object> nodes = new ArrayList<>();
+//                addValue(nodes, nodesValue.getValue(), true);
+//
+//                int i = 0;
+//                for(Object item : nodes)
+//                {
+//                    if (valueContext.getValue().getValue() == item)
+//                    {
+//                        return new MapValue(this, i);
+//                    }
+//                    i++;
+//                }
+//            }
+//        }
+//        return MapValue.NULL;
+//    }
 }

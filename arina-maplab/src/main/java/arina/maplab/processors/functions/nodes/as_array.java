@@ -7,9 +7,7 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 public class as_array extends MapLibraryFunctionProcessor
 {
@@ -23,23 +21,17 @@ public class as_array extends MapLibraryFunctionProcessor
     {
         if(index != null)
         {
-            IMapValue value = computeInputParameter(0, context);
+            IMapValue nodesValue = computeInputParameter(0, context);
 
-            if (value.isNotNull())
+            if (nodesValue.isNotNull())
             {
                 ArrayList<Object> result = new ArrayList<>();
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
 
-                if (value.getValue() instanceof List)
-                {
-                    for (Object item : ((List) value.getValue()))
-                    {
-                        processValue(result, new ValueContext(context, value.create(item)));
-                    }
-                }
-                else
-                {
-                    processValue(result, new ValueContext(context, value.create(value.getValue())));
-                }
+                for (Object item : nodes)
+                    processValue(result, new ValueContext(context, nodesValue.create(item)));
+
                 if(result.size() > 0)
                     return new MapValue(this, result);
             }
@@ -47,14 +39,11 @@ public class as_array extends MapLibraryFunctionProcessor
         return MapValue.NULL;
     }
 
-    private Object processValue(ArrayList<Object> result, IMapContext context) throws Exception
+    private void processValue(ArrayList<Object> result, IMapContext context) throws Exception
     {
-        IMapValue value2 = computeInputParameter(1, context);
+        IMapValue value = computeInputParameter(1, context);
         IMapValue ignoreNULL = computeInputParameter(2, context);
 
-        if(value2.isNotNull() || (ignoreNULL.isNotNull() && ignoreNULL.getValue(Boolean.class) == false))
-            return result.add(value2.getValue());
-        else
-            return result;
+        addValue(result, value.getValue(), (ignoreNULL.isNotNull() && ignoreNULL.getValue(Boolean.class) == false));
     }
 }

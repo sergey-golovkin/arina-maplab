@@ -8,6 +8,7 @@ import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import org.apache.commons.lang.builder.CompareToBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class min extends MapLibraryFunctionProcessor
@@ -22,22 +23,17 @@ public class min extends MapLibraryFunctionProcessor
     {
         if(index != null)
         {
-            IMapValue value = computeInputParameter(0, context);
+            IMapValue nodesValue = computeInputParameter(0, context);
             Object result = null;
 
-            if (value.isNotNull())
+            if (nodesValue.isNotNull())
             {
-                if (value.getValue() instanceof List)
-                {
-                    for (Object item : ((List) value.getValue()))
-                    {
-                        result = processValue(result, new ValueContext(context, value.create(item)));
-                    }
-                }
-                else
-                {
-                    result = processValue(result, new ValueContext(context, value.create(value.getValue())));
-                }
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+
+                for (Object item : nodes)
+                    result = processValue(result, new ValueContext(context, nodesValue.create(item)));
+
                 return new MapValue(this, result);
             }
         }

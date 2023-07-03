@@ -5,7 +5,8 @@ import arina.maplab.processors.contexts.IMapContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
-import java.util.List;
+
+import java.util.ArrayList;
 
 public class at_last_position extends MapLibraryFunctionProcessor
 {
@@ -17,18 +18,14 @@ public class at_last_position extends MapLibraryFunctionProcessor
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        IMapValue values = computeInputParameter(0, context);
+        IMapValue nodesValue = computeInputParameter(0, context);
 
-        if(values.isNotNull())
+        if(nodesValue.isNotNull())
         {
-            if(values.getValue() instanceof List)
-            {
-                List list = values.getValue(List.class);
-                if(list.size() > 0)
-                    return values.create(list.get(list.size() - 1));
-            }
-            else
-                return values;
+            ArrayList<Object> nodes = new ArrayList<>();
+            addValue(nodes, nodesValue.getValue(), true);
+            if(nodes.size() > 0)
+                return nodesValue.create(nodes.get(nodes.size() - 1));
         }
         return MapValue.NULL;
     }

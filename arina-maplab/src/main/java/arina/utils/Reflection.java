@@ -1,11 +1,14 @@
 package arina.utils;
 
 import org.apache.commons.io.FilenameUtils;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class Reflection
@@ -36,9 +39,9 @@ public class Reflection
         }
     }
 
-    public static Object newInstance(String typeName) throws ClassNotFoundException, IllegalAccessException, InstantiationException
+    public static Object newInstance(String typeName) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException
     {
-        return forName(typeName).newInstance();
+        return forName(typeName).getDeclaredConstructor().newInstance();
     }
 
     public static String normalizeType(String type)
@@ -61,10 +64,40 @@ public class Reflection
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
-    public static Object map2Object(Map<String, Object> object, Class clazz) throws Exception
+	public static String extractNamespace(String ns)
+	{
+		String namespace = "";
+
+		for(String v : Arrays.asList(ns.replaceAll("http://www\\.|https://www\\.|http://|https://", "").replaceAll("\\{(.*)\\}.*", "$1").split("/")))
+		{
+			List<String> t = Arrays.asList(v.split("\\."));
+			Collections.reverse(t);
+			for(String s : t)
+				namespace += (namespace.length() > 0 ? "." : "") + s.toLowerCase();
+		}
+
+		return namespace;
+	}
+
+	public static String extractClass(String value)
+	{
+		return value.replaceAll("\\{.*\\}|.*\\:(.*)", "$1");
+	}
+
+	public static Class getClass(String namespace, String name) throws ClassNotFoundException
+	{
+		return Reflection.forName(Reflection.extractNamespace(namespace) + "." + Reflection.normalizeName(name));
+	}
+
+	public static Class getClass(Class parent, String name) throws NoSuchMethodException, ClassNotFoundException
+	{
+		return Reflection.forName(Reflection.normalizeType(Reflection.getMethod(parent, "get" + Reflection.normalizeName(name)).getGenericReturnType().getTypeName()));
+	}
+
+	public static Object map2Object(Map<String, Object> object, Class clazz) throws Exception
     {
 		String name = null;
-		Object root = clazz.newInstance();
+		Object root = clazz.getDeclaredConstructor().newInstance();
 
 		try
 		{
@@ -110,7 +143,7 @@ public class Reflection
 					throw new NoSuchMethodException("Method get/is" + Reflection.normalizeName(name) + " for class " + clazz.getTypeName() + " not found.");
 
 				if (fieldClass == null)
-					fieldClass = Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName()));
+					fieldClass = getClass(e.getValue(), Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName())), false);
 
 				if (e.getValue() instanceof Map)
 				{
@@ -122,7 +155,7 @@ public class Reflection
 					{
 						for (Object item : (List) e.getValue())
 						{
-							setValue(root, name, item);
+							setValue(root, name, TypesUtils.getValue(fieldClass, item));
 						}
 					}
 					else
@@ -132,12 +165,12 @@ public class Reflection
 						{
 							for (Object item : (List) e.getValue())
 							{
-								arrayList.add(map2Object((Map<String, Object>) item, fieldClass));
+								arrayList.add(map2Object((Map<String, Object>) item, getClass(item, fieldClass, false)));
 							}
 						}
 						else if (((List) e.getValue()).size() > 0)
 						{
-							Object o = fieldClass.newInstance();
+							Object o = fieldClass.getDeclaredConstructor().newInstance();
 							setValue(root, name, o);
 							for (Object item : (List) e.getValue())
 							{
@@ -160,17 +193,24 @@ public class Reflection
 						setValue(root, name, e.getValue());
 					else
 					{
-						Object o = fieldClass.newInstance();
+						Object o = fieldClass.getDeclaredConstructor().newInstance();
 						setValue(root, name, o);
 						setValue(o, e.getKey(), e.getValue());
 					}
 				}
 			}
 		}
-        catch (Exception e)
+		catch (IllegalArgumentException e)
 		{
-			if(name != null)
-				throw new IllegalArgumentException("The field \"" + name + "\" has invalid type.");
+			if (name != null)
+				throw new IllegalArgumentException(e.getMessage().replaceFirst("/", '/' + name + '/'));
+			else
+				throw e;
+		}
+		catch (Exception e)
+		{
+			if (name != null)
+				throw new IllegalArgumentException( "The field /" + name + " has invalid type.");
 			else
 				throw e;
 		}
@@ -239,11 +279,12 @@ public class Reflection
 						List list = new ArrayList();
 						list.add(o);
 						map.put(e.getKey(), list);
+						o = list;
 					}
 
 					if(o instanceof List) // если пришел массив
 					{
-						List list = (List) map.get(e.getKey());
+						List list = (List) o;
 						for(int i = 0; i < list.size(); i++)
 						{
 							Object item = list.get(i);
@@ -264,7 +305,15 @@ public class Reflection
 								}
 							}
 
-							resetTypes(item, path + e.getKey() + "/", fields);
+							if(TypesUtils.isSimpleType(field.clazz))
+								list.set(i, TypesUtils.getValue(field.clazz, item));
+							else
+							{
+								if( ! fields.containsKey(path + e.getKey() + "[" + i + "]/"))
+									enrichFields(path, e.getKey(), "[" + i + "]/", fields);
+
+								resetTypes(item, path + e.getKey() + "[" + i + "]/", fields);
+							}
 						}
 					}
 					else if(o instanceof Map) // если пришел объект или тег с атрибутами
@@ -278,6 +327,17 @@ public class Reflection
 						map.put(e.getKey(), TypesUtils.getValue(field.clazz, o)); // это просто значение
 				}
 			}
+		}
+	}
+
+	public static void enrichFields(String path, String key, String index, Map<String, FieldDef> fields)
+	{
+		for(Map.Entry<String, FieldDef> entry : new HashMap<>(fields).entrySet())
+		{
+			if(entry.getKey().equals(path + key))
+				fields.put(path + key + index, new FieldDef(entry.getValue()));
+			else if(entry.getKey().startsWith(path + key + "/"))
+				fields.put(entry.getKey().replace(path + key + "/", path + key + index), new FieldDef(entry.getValue()));
 		}
 	}
 
@@ -298,33 +358,44 @@ public class Reflection
 	{
 		for(Map.Entry<String, Object> entry : map.entrySet())
 		{
-			addFieldDef(path + entry.getKey(), fields);
 			if(entry.getValue() instanceof Map)
-				loopObject((Map<String, Object>) entry.getValue(), path + entry.getKey() + "/", fields);
-			if(entry.getValue() instanceof ArrayList)
 			{
-				for (Object obj : (ArrayList) entry.getValue())
-					loopObject((Map<String, Object>) obj, path + entry.getKey() + "/", fields);
+				addFieldDef(path + entry.getKey(), fields, entry.getValue(), -1);
+				loopObject((Map<String, Object>) entry.getValue(), path + entry.getKey() + "/", fields);
 			}
+			else if(entry.getValue() instanceof ArrayList)
+			{
+				addFieldDef(path + entry.getKey(), fields, null, -1);
+				ArrayList array = (ArrayList) entry.getValue();
+				for(int i = 0; i < array.size(); i++)
+				{
+					Object obj = array.get(i);
+					addFieldDef(path + entry.getKey(), fields, obj, i);
+					if(obj instanceof Map)
+						loopObject((Map<String, Object>) obj, path + entry.getKey() + "[" + i + "]" + "/", fields);
+				}
+			}
+			else
+				addFieldDef(path + entry.getKey(), fields, entry.getValue(), -1);
 		}
 	}
 
-	private static void addFieldDef(String path, Map<String, FieldDef> fields) throws Exception
+	private static void addFieldDef(String path, Map<String, FieldDef> fields, Object children, int index) throws Exception
 	{
 		Class objectClass = fields.get(FilenameUtils.getFullPathNoEndSeparator(path)).clazz;
 		String name = Reflection.normalizeName(FilenameUtils.getName(path));
-		Method m = null;
+		Method method = null;
 		Class fieldClass;
 
 		try
 		{
-			m = Reflection.getMethod(objectClass, "get" + name);
+			method = Reflection.getMethod(objectClass, "get" + name);
 		}
 		catch (NoSuchMethodException e2)
 		{
 			try
 			{
-				m = Reflection.getMethod(objectClass, "is" + name);
+				method = Reflection.getMethod(objectClass, "is" + name);
 			}
 			catch (NoSuchMethodException ex2)
 			{
@@ -337,9 +408,9 @@ public class Reflection
 						{
 							if(element.name().equals(name))
 							{
-								m = objectClass.getMethod("get" + Reflection.normalizeName(field.getName()));
+								method = objectClass.getMethod("get" + Reflection.normalizeName(field.getName()));
 								fieldClass = element.type();
-								fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), false));
+								fields.put(path, new FieldDef(fieldClass, method.getReturnType().isAssignableFrom(List.class), false));
 								return;
 							}
 						}
@@ -348,10 +419,66 @@ public class Reflection
 			}
 		}
 
-		if(m != null)
+		if(method != null)
 		{
-			fieldClass = Reflection.forName(Reflection.normalizeType(m.getGenericReturnType().getTypeName()));
-			fields.put(path, new FieldDef(fieldClass, m.getReturnType().isAssignableFrom(List.class), false));
+			fieldClass = getClass(children, Reflection.forName(Reflection.normalizeType(method.getGenericReturnType().getTypeName())), true);
+			fields.put(path + (index < 0 ? "" : "[" + index + "]"), new FieldDef(fieldClass, method.getReturnType().isAssignableFrom(List.class), false));
 		}
+		else
+		{
+			if("type".equals(FilenameUtils.getName(path)))
+				fields.put(path + (index < 0 ? "" : "[" + index + "]"), new FieldDef(String.class, false, true));
+		}
+	}
+
+	private static Class getClass(Object children, Class fieldClass, boolean isPutRemove) throws ClassNotFoundException
+	{
+		int mod = fieldClass.getModifiers();
+		if(Modifier.isAbstract(mod) && ! Modifier.isInterface(mod))
+		{
+			String type = getType(children);
+			if(type != null && type.length() > 0)
+			{
+				type = Reflection.extractClass(type);
+				XmlSeeAlso seeAlso = ((XmlSeeAlso) fieldClass.getAnnotation(XmlSeeAlso.class));
+				if(seeAlso != null)
+				{
+					for(Class clazz : seeAlso.value())
+					{
+						String alsoname = clazz.getSimpleName();
+						if(alsoname.equals(type))
+						{
+							fieldClass = clazz;
+							if(isPutRemove)
+								putType(children, clazz, type);
+							else
+								removeType(children);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return fieldClass;
+	}
+
+	private static String getType(Object children)
+	{
+		if(children instanceof Map)
+			return (String) ((Map) children).get("type");
+
+		return null;
+	}
+
+	private static void putType(Object children, Class clazz, String type)
+	{
+		if(children instanceof Map)
+			((Map)children).put("type", "{" + clazz.getPackage().getAnnotation(XmlSchema.class).namespace() + "}" + type);
+	}
+
+	private static void removeType(Object children)
+	{
+		if(children instanceof Map)
+			((Map) children).remove("type");
 	}
 }

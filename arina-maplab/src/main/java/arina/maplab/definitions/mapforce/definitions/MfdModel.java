@@ -97,7 +97,7 @@ public class MfdModel extends MapModel
         if(loader == null)
         {
             Class clazz = Class.forName("arina.maplab.definitions.mapforce.loaders.MfdLoaderKind" + component.getKind());
-            loader = (IMfdComponentDefinitionLoader) clazz.newInstance();
+            loader = (IMfdComponentDefinitionLoader) clazz.getDeclaredConstructor().newInstance();
             loaders.put(component.getKind(), loader);
         }
 

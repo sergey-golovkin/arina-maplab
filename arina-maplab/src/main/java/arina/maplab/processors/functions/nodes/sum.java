@@ -6,9 +6,10 @@ import arina.maplab.processors.contexts.ValueContext;
 import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
+import arina.utils.TypesUtils;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.ArrayList;
 
 public class sum extends MapLibraryFunctionProcessor
 {
@@ -22,34 +23,32 @@ public class sum extends MapLibraryFunctionProcessor
     {
         if(index != null)
         {
-            IMapValue value = computeInputParameter(0, context);
-            BigDecimal result = new BigDecimal(0);
+            IMapValue nodesValue = computeInputParameter(0, context);
 
-            if (value.isNotNull())
+            if (nodesValue.isNotNull())
             {
-                if (value.getValue() instanceof List)
+                BigDecimal result = new BigDecimal(0);
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+
+                for (Object item : nodes)
                 {
-                    for (Object item : ((List) value.getValue()))
+                    IMapValue valueValue = computeInputParameter(1, new ValueContext(context, nodesValue.create(item)));
+                    if(valueValue.isNotNull())
                     {
-                        result = processValue(result, new ValueContext(context, value.create(item)));
+                        ArrayList<Object> results = new ArrayList<>();
+                        addValue(results, valueValue.getValue(), true);
+
+                        for (Object item2 : results)
+                        {
+                            if (item2 != null)
+                                result = result.add(TypesUtils.getValue(BigDecimal.class, item2));
+                        }
                     }
-                }
-                else
-                {
-                    result = processValue(result, new ValueContext(context, value.create(value.getValue())));
                 }
                 return new MapValue(this, result);
             }
         }
         return MapValue.NULL;
-    }
-
-    private BigDecimal processValue(BigDecimal result, IMapContext context) throws Exception
-    {
-        IMapValue value2 = computeInputParameter(1, context);
-        if(value2.isNotNull())
-            return result.add(value2.getValue(BigDecimal.class));
-        else
-            return result;
     }
 }

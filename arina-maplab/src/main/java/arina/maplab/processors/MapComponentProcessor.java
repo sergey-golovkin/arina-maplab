@@ -143,4 +143,15 @@ abstract public class MapComponentProcessor implements IMapComponentProcessor
             return MapValue.NULL;
         }
     }
+
+    protected void addValue(ArrayList<Object> result, Object value, boolean ignoreNULL)
+    {
+        if(value != null || ignoreNULL)
+        {
+            if (value instanceof List)
+                ((List) value).forEach(x -> addValue(result, x, ignoreNULL));
+            else
+                result.add(value);
+        }
+    }
 }

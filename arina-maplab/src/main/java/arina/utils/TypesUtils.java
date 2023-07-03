@@ -1,18 +1,17 @@
 package arina.utils;
 
-import arina.maplab.value.IMapValue;
-
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
 public class TypesUtils
 {
@@ -45,6 +44,7 @@ public class TypesUtils
         mapTypeName2Class.put("time",           XMLGregorianCalendar.class);
         mapTypeName2Class.put("duration",       Duration.class);
         mapTypeName2Class.put("base64Binary",   byte[].class);
+        mapTypeName2Class.put("byte[]",         byte[].class);
 
         mapClass2typeName.put(Object.class, "anySimpleType");
         mapClass2typeName.put(String.class, "string");
@@ -131,7 +131,12 @@ public class TypesUtils
         if("float".equals(typeName))
             return DatatypeConverter.parseFloat(value);
         if("decimal".equals(typeName))
+        {
+            if (value.contains(","))
+                value = value.replaceAll(",", ".");
+
             return DatatypeConverter.parseDecimal(value);
+        }
         if("integer".equals(typeName))
             return BigInteger.valueOf(DatatypeConverter.parseDecimal(value).longValue());
         if("long".equals(typeName))
@@ -197,21 +202,21 @@ public class TypesUtils
             return DatatypeConverter.printQName((QName) value, null);
         if(value instanceof Calendar)
             return DatatypeConverter.printDateTime((Calendar) value);
+        if(value instanceof Time)
+        {
+            Calendar c = Calendar.getInstance();
+            c.setTime((Time) value);
+            return DatatypeConverter.printTime(c);
+        }
         if(value instanceof Date)
         {
             Calendar c = Calendar.getInstance();
             c.setTime((Date) value);
             return DatatypeConverter.printDate(c);
         }
-        if(value instanceof Time)
-        {
-                Calendar c = Calendar.getInstance();
-                c.setTime((Time) value);
-                return DatatypeConverter.printTime(c);
-        }
         if(value instanceof Duration)
             return value.toString();
-        if(value instanceof byte[])
+        if(value instanceof byte[]) 
             return DatatypeConverter.printBase64Binary((byte[]) value);
 
         return value.toString();

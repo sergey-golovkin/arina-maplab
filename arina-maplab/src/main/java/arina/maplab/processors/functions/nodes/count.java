@@ -6,7 +6,7 @@ import arina.maplab.processors.functions.MapLibraryFunctionProcessor;
 import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class count extends MapLibraryFunctionProcessor
 {
@@ -18,11 +18,17 @@ public class count extends MapLibraryFunctionProcessor
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        IMapValue value = computeInputParameter(0, context);
+        if(index != null)
+        {
+            IMapValue nodesValue = computeInputParameter(0, context);
 
-        if(value.getValue() instanceof List)
-            return new MapValue(this, value.getValue(List.class).size());
-        else
-            return new MapValue(this, null);
+            if (nodesValue.isNotNull())
+            {
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+                return new MapValue(this, nodes.size());
+            }
+        }
+        return MapValue.NULL;
     }
 }

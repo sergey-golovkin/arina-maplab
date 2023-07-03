@@ -182,5 +182,21 @@
 				<long>Creates an array of the node values.</long>
 			</description>
 		</component>
+		<component name="remove-null-values">
+			<sources>
+				<datapoint name="object" type="mf:item"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="mf:item"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>object = remove-null-values(object)</short>
+				<long>Removes all null values or empty arrays from object.</long>
+			</description>
+		</component>
 	</group>	
 </mapping>

@@ -5,7 +5,7 @@
        	<parent>
        		<groupId>arina</groupId>
        		<artifactId>arina</artifactId>
-       		<version>7.0.35</version>
+			<version>8.0</version>
        	</parent>
 	<artifactId>camel-arina-maplab</artifactId>
 	<name>camel-arina-maplab</name>
@@ -13,6 +13,8 @@
 
 	<dependencies>
 		<dependency><groupId>org.apache.camel</groupId><artifactId>camel-core</artifactId><version>${camel.version}</version></dependency>
+		<dependency><groupId>org.apache.camel</groupId><artifactId>camel-attachments</artifactId><version>${camel.version}</version></dependency>
+		<dependency><groupId>jakarta.xml.bind</groupId><artifactId>jakarta.xml.bind-api</artifactId><version>${jakarta.version}</version></dependency>
 		<dependency><groupId>arina</groupId><artifactId>arina-maplab</artifactId><version>${project.version}</version></dependency>
 	</dependencies>
 
@@ -29,5 +31,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<finalName>${project.name}-${project.version}.${buildNumber}</finalName>
 	</build>
 </project>

@@ -23,44 +23,35 @@ public class MapFilterProcessor extends MapComponentProcessor
         {
             IMapValue value = computeInputParameter(0, context);
 
-            if (value.isNotNull())
+            if(value.isNotNull())
             {
                 List<Object> resultTrue = new ArrayList<>();
                 List<Object> resultFalse = new ArrayList<>();
 
-                if (value.getValue() instanceof List)
+                ArrayList<Object> values = new ArrayList<>();
+                addValue(values, value.getValue(), true);
+
+                for(Object item : values)
                 {
-                    for (Object item : ((List) value.getValue()))
+                    IMapValue condition = computeInputParameter(1, new ValueContext(context, value.create(item)));
+                    if(condition.isNotNull())
                     {
-                        processValue(item, new ValueContext(context, value.create(item)), resultTrue, resultFalse);
+                        Boolean conditionValue = condition.getValue(Boolean.class);
+
+                        if (conditionValue)
+                            resultTrue.add(item);
+                        else
+                            resultFalse.add(item);
                     }
                 }
-                else
-                {
-                    processValue(value.getValue(), new ValueContext(context, value.create(value.getValue())), resultTrue, resultFalse);
-                }
 
-                if (index.equals(definition.getOutputList().get(0)))
+                if(index.equals(definition.getOutputList().get(0)))
                     return value.create(resultTrue);
 
-                if (index.equals(definition.getOutputList().get(1)))
+                if(index.equals(definition.getOutputList().get(1)))
                     return value.create(resultFalse);
             }
         }
         return MapValue.NULL;
-    }
-
-    private void processValue(Object value, IMapContext context, List<Object> resultTrue, List<Object> resultFalse) throws Exception
-    {
-        IMapValue condition = computeInputParameter(1, context);
-        if(condition.isNotNull())
-        {
-            Boolean conditionValue = condition.getValue(Boolean.class);
-
-            if (conditionValue)
-                resultTrue.add(value);
-            else
-                resultFalse.add(value);
-        }
     }
 }

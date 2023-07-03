@@ -10,7 +10,9 @@ import arina.maplab.value.IMapValue;
 import arina.maplab.value.MapValue;
 import arina.utils.LanguageUtils;
 import org.apache.camel.Exchange;
-import org.apache.camel.impl.DefaultProducer;
+import org.apache.camel.attachment.Attachment;
+import org.apache.camel.attachment.AttachmentMessage;
+import org.apache.camel.support.DefaultProducer;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -24,10 +26,10 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.CRC32;
 
 public class MapProducer extends DefaultProducer
 {
@@ -97,15 +99,33 @@ public class MapProducer extends DefaultProducer
 
         IInputValueContext context = null;
         for(IMapComponentDefinition mcd : def.getInputsList()) // обработка входящих параметров
-            context = new InputValueContext(context, mcd.getName(), new MapValue(null, LanguageUtils.evaluate(exchange, getSimpleName(mcd.getName()), String.class)));
+        {
+            if(mcd.getName().equals("attachments"))
+            {
+                HashMap<String, Object> attachments_value = new HashMap<>();
+                ArrayList<HashMap<String, Object>> attachments = new ArrayList();
+                attachments_value.put("Attachment", attachments);
+                for(Attachment attachment : exchange.getMessage(AttachmentMessage.class).getAttachmentObjects().values())
+                {
+                    HashMap<String, Object> values = new HashMap<>();
+                    attachments.add(values);
+
+                    for(String name : attachment.getHeaderNames())
+                        values.put(name, attachment.getHeader(name));
+                }
+                context = new InputValueContext(context, mcd.getName(), new MapValue(null, attachments_value));
+            }
+            else
+                context = new InputValueContext(context, mcd.getName(), new MapValue(null, LanguageUtils.evaluate(exchange, getSimpleName(mcd.getName()), String.class)));
+        }
 
         MapProcessor processor = new MapProcessor(context, def);
         for(Map.Entry<String, IMapValue> item : processor.getOutputs().entrySet()) // обработка результатов
         {
             if (item.getKey().equals("body"))
-                exchange.getIn().setBody(item.getValue().getValue(), Object.class);
+                exchange.getMessage().setBody(item.getValue().getValue(), Object.class);
             else if(item.getKey().matches("^header_(.*)"))
-                exchange.getIn().setHeader(item.getKey().replaceAll("^header_(.*)", "$1"), item.getValue().getValue());
+                exchange.getMessage().setHeader(item.getKey().replaceAll("^header_(.*)", "$1"), item.getValue().getValue());
             else if(item.getKey().matches("^exchange[P|p]roperty_(.*)"))
                 exchange.setProperty(item.getKey().replaceAll("^exchange[P|p]roperty_(.*)", "$1"), item.getValue().getValue());
         }

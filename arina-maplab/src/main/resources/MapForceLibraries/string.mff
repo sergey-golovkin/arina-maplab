@@ -261,5 +261,106 @@
 				<long>Returns a string whose value is this string, with any leading and trailing whitespace removed.</long>
 			</description>
 		</component>
+        <component name="substring-after">
+            <sources>
+                <datapoint name="string" type="xs:string"/>
+                <datapoint name="substring" type="xs:string"/>
+            </sources>
+            <targets>
+                <datapoint name="result" type="xs:string"/>
+            </targets>
+            <implementations>
+                <implementation language="builtin">
+                </implementation>
+            </implementations>
+            <description>
+                <short>result = substring-after(string, substring)</short>
+                <long>Returns the part of the string that occurs after the substr.</long>
+            </description>
+        </component>
+        <component name="substring-before">
+            <sources>
+                <datapoint name="string" type="xs:string"/>
+                <datapoint name="substring" type="xs:string"/>
+            </sources>
+            <targets>
+                <datapoint name="result" type="xs:string"/>
+            </targets>
+            <implementations>
+                <implementation language="builtin">
+                </implementation>
+            </implementations>
+            <description>
+                <short>result = substring-before(string, substring)</short>
+                <long>Returns the part of the string that occurs before the substr.</long>
+            </description>
+        </component>
+        <component name="distinct-values">
+			<sources>
+				<datapoint name="values" type="ZeroOrMore mf:no-sequence"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="ZeroOrMore xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = distinct-values(values)</short>
+				<long>Returns a sequence of distinct values.</long>
+			</description>
+		</component>
+		<component name="mask-format">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="mask" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = mask-format(value)</short>
+				<long>Returns a string representation of the input value based on the mask.</long>
+			</description>
+		</component>
+		<component name="to-byte-array">
+			<sources>
+				<datapoint name="value" type="xs:string"/>
+				<datapoint name="charset" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:base64Binary"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = to-byte-array(value, [, charset])</short>
+				<long>Returns new byte array from string using the named charset.</long>
+			</description>
+		</component>
+		<component name="from-byte-array">
+			<sources>
+				<datapoint name="value" type="xs:base64Binary"/>
+				<datapoint name="charset" type="xs:string" connectiontype="0"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+			<description>
+				<short>result = from-byte-array(value, [, charset])</short>
+				<long>Returns new string from byte array using the named charset.</long>
+			</description>
+		</component>
 	</group>	
 </mapping>

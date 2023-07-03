@@ -37,23 +37,26 @@ public class MapSortProcessor extends MapComponentProcessor
     @Override
     protected IMapValue getValueInternal(String index, IMapContext context) throws Exception
     {
-        IMapValue value = MapValue.NULL;
+        IMapValue nodesValue = MapValue.NULL;
 
         if (index != null)
         {
-            value = computeInputParameter(0, context);
+            nodesValue = computeInputParameter(0, context);
 
-            if (value.isNotNull() && value.getValue() instanceof List)
+            if (nodesValue.isNotNull())
             {
+                ArrayList<Object> nodes = new ArrayList<>();
+                addValue(nodes, nodesValue.getValue(), true);
+
                 List<SortRow> rows = new ArrayList<>();
 
-                for (Object item : ((List) value.getValue()))
+                for (Object item : nodes)
                 {
                     SortRow row = new SortRow(item);
                     rows.add(row);
                     for(int i = 1; i < definition.getInputList().size(); i++)
                     {
-                        row.keys.add(computeInputParameter(i, new ValueContext(context, value.create(item))));
+                        row.keys.add(computeInputParameter(i, new ValueContext(context, nodesValue.create(item))));
                     }
                 }
 
@@ -82,9 +85,9 @@ public class MapSortProcessor extends MapComponentProcessor
 
                 final List list = new ArrayList<>();
                 rows.forEach(v -> list.add(v.item));
-                return value.create(list);
+                return nodesValue.create(list);
             }
         }
-        return value;
+        return nodesValue;
     }
 }

@@ -30,4 +30,13 @@ public class FieldDef
 		}
 		this.ifValueClazz = ifvt;
 	}
+
+	public FieldDef(FieldDef fd)
+	{
+		this.clazz = fd.clazz;
+		this.isArray = fd.isArray;
+		this.isAttribute = fd.isAttribute;
+		this.isObject = fd.isObject;
+		this.ifValueClazz = fd.ifValueClazz;
+	}
 }

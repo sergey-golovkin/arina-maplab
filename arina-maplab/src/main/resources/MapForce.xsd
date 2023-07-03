@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2021 rel. 2 (x64) (http://www.altova.com) by  (IC Rosgosstrakh, PJSC) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
 	<xs:element name="children">
 		<xs:complexType>
@@ -73,6 +74,12 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="attribute">
+		<xs:complexType>
+			<xs:attribute name="ns" type="xs:string" use="optional"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="constant">
 		<xs:complexType>
 			<xs:attribute name="value" use="optional">
@@ -132,6 +139,7 @@
 			<xs:enumeration value="time"/>
 			<xs:enumeration value="duration"/>
 			<xs:enumeration value="base64Binary"/>
+			<xs:enumeration value="QName"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:element name="description">
@@ -230,6 +238,19 @@
 				</xs:element>
 				<xs:element ref="inputnodefunctions" minOccurs="0"/>
 				<xs:element ref="outputnodefunctions" minOccurs="0"/>
+				<xs:element name="condition" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="expression" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="function" type="function" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element ref="entry" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
@@ -252,6 +273,7 @@
 						<xs:enumeration value="json-item"/>
 						<xs:enumeration value="table"/>
 						<xs:enumeration value="xml-type"/>
+						<xs:enumeration value="json-subtype"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -261,6 +283,7 @@
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:enumeration value="selection"/>
+						<xs:enumeration value="all"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -407,11 +430,7 @@
 								<xs:attribute name="value" type="xs:string"/>
 							</xs:complexType>
 						</xs:element>
-						<xs:element name="function" minOccurs="0">
-							<xs:complexType>
-								<xs:attribute name="name" type="xs:string"/>
-							</xs:complexType>
-						</xs:element>
+						<xs:element name="function" type="function" minOccurs="0"/>
 						<xs:element name="filter" minOccurs="0">
 							<xs:complexType>
 								<xs:attribute name="datatype" type="datatype"/>
@@ -1673,4 +1692,20 @@
 	<xs:element name="wsdl">
 		<xs:complexType/>
 	</xs:element>
+	<xs:complexType name="function">
+		<xs:sequence>
+			<xs:element name="expression" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element ref="attribute"/>
+							<xs:element ref="constant"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="library" type="xs:string"/>
+	</xs:complexType>
 </xs:schema>

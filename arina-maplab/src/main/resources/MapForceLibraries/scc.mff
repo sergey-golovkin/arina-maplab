@@ -1,0 +1,24 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="scc" 
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mf="http://www.altova.com/MapForce/2010/standard">
+	<implementations>
+		<implementation language="builtin"/>
+	</implementations>
+	<group name="scc functions">		
+		<component name="get-field-value">
+			<sources>
+				<datapoint name="dictionary_id" type="xs:string"/>
+				<datapoint name="search_field_id" type="xs:string"/>
+				<datapoint name="criteria" type="ZeroOrMore mf:no-sequence"/>
+			</sources>
+			<targets>
+				<datapoint name="result" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="builtin">
+				</implementation>
+			</implementations>
+		</component>
+	</group>	
+</mapping>
